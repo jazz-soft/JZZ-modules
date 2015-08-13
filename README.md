@@ -4,7 +4,7 @@ Additional modules for [**JZZ.js**](https://github.com/jazz-soft/JZZ)
 
 ## JZZ.synth.MIDIjs
 
-This module allows to create virtual MIDI-Out port using [**MIDI.js**](https://github.com/mudcube/MIDI.js) library.
+Create a virtual MIDI-Out port using [**MIDI.js**](https://github.com/mudcube/MIDI.js) library.
 
 ##### Example
 
