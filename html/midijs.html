@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>JZZ.synth.MIDIjs</title>
+<style type="text/css">
+.loading { color:#444; background:#ffb; padding:.5em;}
+button { text-align:left;}
+</style>
+<script src="../javascript/JZZ.js"></script>
+<script src="../javascript/MIDI.js"></script>
+<script src="../javascript/JZZ.synth.MIDIjs.js"></script>
+<script><!--
+var loading;
+function showLoading(){
+  if (loading) return;
+  loading = document.createElement('DIV');
+  loading.innerHTML = 'MIDI.js loading...';
+  loading.className = 'loading';
+  loading.style.position = 'fixed';
+  document.body.appendChild(loading);
+  center(loading);
+}
+function center(div){
+  var r = div.getBoundingClientRect();
+  var w = window.innerWidth;
+  var h = window.innerHeight;
+  div.style.top = (h+r.top-r.bottom)/2+'px';
+  div.style.left = (w+r.left-r.right)/2+'px';
+}
+function hideLoading(){
+  if (!loading) return;
+  if (loading.parentElement) loading.parentElement.removeChild(loading);
+  loading = undefined;
+}
+function button1(){
+  showLoading();
+  JZZ.synth.MIDIjs('MIDI.js', { soundfontUrl: "./soundfont/", instrument: "acoustic_grand_piano" })
+    .or(function(){ hideLoading(); alert('Cannot load MIDI.js '+this.err()); })
+    .and(function(){ hideLoading(); })
+    .note(0, 'C5', 127, 500).wait(500)
+    .note(0, 'E5', 127, 500).wait(500)
+    .note(0, 'G5', 127, 500).wait(500)
+    .note(0, 'C6', 127, 500);
+}
+function button2(){
+  JZZ.synth.MIDIjs.register('MIDI.js', { soundfontUrl: "./soundfont/", instrument: "acoustic_grand_piano" });
+  showLoading();
+  JZZ().openMidiOut('MIDI.js')
+    .or(function(){ hideLoading(); alert('Cannot load MIDI.js '+this.err()); })
+    .and(function(){ hideLoading(); })
+    .note(0, 'C5', 127, 500).wait(500)
+    .note(0, 'E5', 127, 500).wait(500)
+    .note(0, 'G5', 127, 500).wait(500)
+    .note(0, 'C6', 127, 500);
+}
+
+--></script>
+
+</head>
+
+<body>
+<h1>JZZ.synth.MIDIjs</h1>
+<button onclick='button1();'><pre>
+JZZ.synth.MIDIjs('MIDI.js', {...})
+
+  .note(0, 'C5', 127, 500).wait(500)
+  .note(0, 'E5', 127, 500).wait(500)
+  .note(0, 'G5', 127, 500).wait(500)
+  .note(0, 'C6', 127, 500);
+</pre></button>
+
+<button onclick='button2();'><pre>
+JZZ.synth.MIDIjs.register('MIDI.js', {...});
+JZZ().openMidiOut('MIDI.js')
+  .note(0, 'C5', 127, 500).wait(500)
+  .note(0, 'E5', 127, 500).wait(500)
+  .note(0, 'G5', 127, 500).wait(500)
+  .note(0, 'C6', 127, 500);
+</pre></button>
+
+<p>
+NOTE: MIDI.js may not work in all browsers if called from local file.
+</p>
+
+</body>
+</html>
