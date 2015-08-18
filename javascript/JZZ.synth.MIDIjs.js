@@ -4,7 +4,8 @@
 
   var _waiting = false;
   var _running = false;
-  var _err;
+  var _bad = false;
+  var _error;
 
   function _send(a) {
     var s = a[0]>>4;
@@ -34,7 +35,9 @@
   }
 
   function _onerror(evt) {
-    for (var i=0; i<_ports.length; i++) _ports[i][0]._crash(evt);
+    _bad = true;
+    _error = evt;
+    for (var i=0; i<_ports.length; i++) _ports[i][0]._crash(_error);
   }
 
   var _engine = {};
@@ -44,14 +47,18 @@
     return {
       type: 'MIDI.js',
       name: name,
-      manufacturer: '',
-      version: '0.0'
+      manufacturer: 'virtual',
+      version: '0.3.2'
     };
   }
 
   _engine._openOut = function(port, name) {
     if (_running) {
       _release(port, name);
+      return;
+    }
+    if (_bad) {
+      port._crash(_error);
       return;
     }
     port._pause();
@@ -66,8 +73,8 @@
       MIDI.loadPlugin(arg);
     }
     catch(e) {
-      _err = e.message;
-      _onerror(_err);
+      _error = e.message;
+      _onerror(_error);
     }
   }
 

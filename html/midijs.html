@@ -35,7 +35,7 @@ function hideLoading(){
 function button1(){
   showLoading();
   JZZ.synth.MIDIjs('MIDI.js', { soundfontUrl: "./soundfont/", instrument: "acoustic_grand_piano" })
-    .or(function(){ hideLoading(); alert('Cannot load MIDI.js '+this.err()); })
+    .or(function(){ hideLoading(); alert('Cannot load MIDI.js!\n' + this.err()); })
     .and(function(){ hideLoading(); })
     .note(0, 'C5', 127, 500).wait(500)
     .note(0, 'E5', 127, 500).wait(500)
@@ -43,10 +43,10 @@ function button1(){
     .note(0, 'C6', 127, 500);
 }
 function button2(){
-  JZZ.synth.MIDIjs.register('MIDI.js', { soundfontUrl: "./soundfont/", instrument: "acoustic_grand_piano" });
+  JZZ.synth.MIDIjs.register('MIDI.js', { soundfontUrl: "./soundf ont/", instrument: "acoustic_grand_piano" });
   showLoading();
-  JZZ().openMidiOut('MIDI.js')
-    .or(function(){ hideLoading(); alert('Cannot load MIDI.js '+this.err()); })
+  JZZ().or(function(){ hideLoading(); alert('Cannot start MIDI engine!\n' + this.err()); })
+    .openMidiOut('MIDI.js').or(function(){ hideLoading(); alert('Cannot load MIDI.js!\n' + this.err()); })
     .and(function(){ hideLoading(); })
     .note(0, 'C5', 127, 500).wait(500)
     .note(0, 'E5', 127, 500).wait(500)
@@ -79,7 +79,7 @@ JZZ().openMidiOut('MIDI.js')
 </pre></button>
 
 <p>
-NOTE: MIDI.js may not work in all browsers if called from local file.
+NOTE: MIDI.js may not work in all browsers if called from the local file.
 </p>
 
 </body>
