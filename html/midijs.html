@@ -43,7 +43,7 @@ function button1(){
     .note(0, 'C6', 127, 500);
 }
 function button2(){
-  JZZ.synth.MIDIjs.register('MIDI.js', { soundfontUrl: "./soundf ont/", instrument: "acoustic_grand_piano" });
+  JZZ.synth.MIDIjs.register('MIDI.js', { soundfontUrl: "./soundfont/", instrument: "acoustic_grand_piano" });
   showLoading();
   JZZ().or(function(){ hideLoading(); alert('Cannot start MIDI engine!\n' + this.err()); })
     .openMidiOut('MIDI.js').or(function(){ hideLoading(); alert('Cannot load MIDI.js!\n' + this.err()); })
