@@ -42,7 +42,7 @@
     this.play = function(v) {
       if (this.oscillator) this.oscillator.stop();
       if (!v) return;
-      var ampl = 127/v;
+      var ampl = v/127;
       this.oscillator = _ac.createOscillator();
       this.oscillator.type = 'sawtooth';
       this.oscillator.frequency.value = this.freq;
