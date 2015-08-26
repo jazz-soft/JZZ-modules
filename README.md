@@ -6,6 +6,10 @@ Additional modules for [**JZZ.js**](https://github.com/jazz-soft/JZZ)
 
 Create a custom MIDI-Out port using [**MIDI.js**](https://github.com/mudcube/MIDI.js) library.
 
+[![windows](http://jazz-soft.github.io/img/windows.jpg)](http://jazz-soft.github.io/modules/midijs)
+[![mocos](http://jazz-soft.github.io/img/macos.jpg)](http://jazz-soft.github.io/modules/midijs)
+[![linux](http://jazz-soft.github.io/img/linux.jpg)](http://jazz-soft.github.io/modules/midijs)
+
 ##### Example
 
     <script src='javascript/JZZ.js'></script>
@@ -25,11 +29,11 @@ See the [**demo**](http://jazz-soft.github.io/modules/midijs).
 
 Create a custom MIDI-Out port implemented via Web Audio AudioContext.oscillator.
 
-[![windows](http://jazz-soft.github.io/img/windows.jpg)]()
-[![mocos](http://jazz-soft.github.io/img/macos.jpg)]()
-[![linux](http://jazz-soft.github.io/img/linux.jpg)]()
-[![ios](http://jazz-soft.github.io/img/ios.jpg)]()
-[![android](http://jazz-soft.github.io/img/android.jpg)]()
+[![windows](http://jazz-soft.github.io/img/windows.jpg)](http://jazz-soft.github.io/modules/osc)
+[![mocos](http://jazz-soft.github.io/img/macos.jpg)](http://jazz-soft.github.io/modules/osc)
+[![linux](http://jazz-soft.github.io/img/linux.jpg)](http://jazz-soft.github.io/modules/osc)
+[![ios](http://jazz-soft.github.io/img/ios.jpg)](http://jazz-soft.github.io/modules/osc)
+[![android](http://jazz-soft.github.io/img/android.jpg)](http://jazz-soft.github.io/modules/osc)
 
 ##### Example
 
