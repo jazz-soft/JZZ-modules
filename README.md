@@ -25,6 +25,12 @@ See the [**demo**](http://jazz-soft.github.io/modules/midijs).
 
 Create a custom MIDI-Out port implemented via Web Audio AudioContext.oscillator.
 
+[![windows](http://jazz-soft.github.io/img/windows.jpg)]()
+[![mocos](http://jazz-soft.github.io/img/macos.jpg)]()
+[![linux](http://jazz-soft.github.io/img/linux.jpg)]()
+[![ios](http://jazz-soft.github.io/img/ios.jpg)]()
+[![android](http://jazz-soft.github.io/img/android.jpg)]()
+
 ##### Example
 
     <script src='javascript/JZZ.js'></script>

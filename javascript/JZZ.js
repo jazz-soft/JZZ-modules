@@ -1,6 +1,6 @@
 (function() {
 
-  var _version = '0.1.8';
+  var _version = '0.2.0';
 
   // _R: common root for all async objects
   function _R() {
@@ -191,8 +191,17 @@
     return a;
   }
 
+  function _notFound(port, q) {
+    var msg;
+    if (q instanceof RegExp) msg = 'Port matching ' + q + ' not found';
+    else if (q instanceof Object || q === undefined) msg = 'Port not found';
+    else msg = 'Port "' + q + '" not found';
+    port._crash(msg);
+  }
+
   function _openMidiOut(port, arg) {
     var arr = _filterList(arg, _outs);
+    if (!arr.length) { _notFound(port, arg); return; }
     function pack(x){ return function(){x.engine._openOut(this, x.name);};};
     for (var i=0; i<arr.length; i++) arr[i] = pack(arr[i]);
     port._slip(_tryAny, [arr]);
@@ -207,6 +216,7 @@
 
   function _openMidiIn(port, arg) {
     var arr = _filterList(arg, _ins);
+    if (!arr.length) { _notFound(port, arg); return; }
     function pack(x){ return function(){x.engine._openIn(this, x.name);};};
     for (var i=0; i<arr.length; i++) arr[i] = pack(arr[i]);
     port._slip(_tryAny, [arr]);
@@ -619,7 +629,7 @@
   }
 
   JZZ = function(opt) {
-    if(!_jzz) _initJZZ(opt);
+    if (!_jzz) _initJZZ(opt);
     return _jzz;
   }
 
@@ -634,15 +644,19 @@
     return port;
   }
   JZZ._registerMidiOut = function(name, engine) {
+    for (var i in _virtual._outs) if (_virtual._outs[i].name == name) return false;
     var x = engine._info(name);
     x.engine = engine;
     _virtual._outs.push(x);
+    if (_jzz && _jzz._bad) { _jzz._repair(); _jzz._resume(); }
     return true;
   }
   JZZ._registerMidiIn = function(name, engine) {
+    for (var i in _virtual._ins) if (_virtual._ins[i].name == name) return false;
     var x = engine._info(name);
     x.engine = engine;
     _virtual._ins.push(x);
+    if (_jzz && _jzz._bad) { _jzz._repair(); _jzz._resume(); }
     return true;
   }
 
@@ -833,5 +847,24 @@
   }
 
   JZZ.MIDI = MIDI;
+
+  JZZ.util = {};
+
+  JZZ.util.iosSound = function() {
+    JZZ.util.iosSound = function() {};
+    if (!window) return;
+    var AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return;
+    var context = new AudioContext();
+    if (!context.createGain) context.createGain = context.createGainNode;
+    var osc = context.createOscillator();
+    var gain = context.createGain();
+    gain.gain.value = 0;
+    osc.connect(gain);
+    gain.connect(context.destination);
+    if (!osc.start) osc.start = osc.noteOn;
+    if (!osc.stop) osc.stop = osc.noteOff;
+    osc.start(0); osc.stop(1);
+  }
 
 })();
