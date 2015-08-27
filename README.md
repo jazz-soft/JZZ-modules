@@ -9,6 +9,7 @@ Create a custom MIDI-Out port using [**MIDI.js**](https://github.com/mudcube/MID
 [![windows](http://jazz-soft.github.io/img/windows.jpg)](http://jazz-soft.github.io/modules/midijs)
 [![mocos](http://jazz-soft.github.io/img/macos.jpg)](http://jazz-soft.github.io/modules/midijs)
 [![linux](http://jazz-soft.github.io/img/linux.jpg)](http://jazz-soft.github.io/modules/midijs)
+[![android](http://jazz-soft.github.io/img/android.jpg)](http://jazz-soft.github.io/modules/midijs)
 
 ##### Example
 
