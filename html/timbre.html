@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>JZZ.synth.Timbre</title>
+<style type="text/css">
+.loading { color:#444; background:#ffb; padding:.5em;}
+button { text-align:left;}
+</style>
+<script src="../javascript/timbre.js"></script>
+<script src="../javascript/JZZ.js"></script>
+<script src="../javascript/JZZ.synth.Timbre.js"></script>
+<script><!--
+var synth = T("SynthDef").play();
+synth.def = function(opts) {
+  var osc1, osc2, env;
+  osc1 = T("sin", {freq:opts.freq, mul:0.25});
+  osc2 = T("sin", {freq:opts.freq + 8, mul:0.25});
+  env  = T("linen", {s:450, r:2500, lv:0.5}, osc1, osc2);
+  return env.on("ended", opts.doneAction).bang();
+};
+function play1() {
+  JZZ.util.iosSound();
+  JZZ.synth.Timbre.register('Timbre', synth)
+  JZZ().openMidiOut('Timbre')
+    .or(function(){ alert('Cannot open MIDI-Out! ' + this.err()); })
+    .note(0, 'C5', 127, 500).wait(500)
+    .note(0, 'E5', 127, 500).wait(500)
+    .note(0, 'G5', 127, 500).wait(500)
+    .note(0, 'C6', 127, 500);
+}
+function play2() {
+  JZZ.util.iosSound();
+  JZZ.synth.Timbre('Timbre', synth)
+    .or(function(){ alert('Cannot open MIDI-Out! ' + this.err()); })
+    .note(0, 'C5', 127, 500).wait(500)
+    .note(0, 'E5', 127, 500).wait(500)
+    .note(0, 'G5', 127, 500).wait(500)
+    .note(0, 'C6', 127, 500);
+}
+--></script>
+
+</head>
+
+<body>
+<h1>JZZ.synth.Timbre</h1>
+
+<button onclick='play1();'><pre>
+JZZ.synth.Timbre.register('Timbre', synth3)
+JZZ().openMidiOut('Timbre')
+  .note(0, 'C5', 127, 500).wait(500)
+  .note(0, 'E5', 127, 500).wait(500)
+  .note(0, 'G5', 127, 500).wait(500)
+  .note(0, 'C6', 127, 500);
+}
+</pre></button>
+
+<button onclick='play2();'><pre>
+JZZ.synth.Timbre('Timbre', synth)
+
+  .note(0, 'C5', 127, 500).wait(500)
+  .note(0, 'E5', 127, 500).wait(500)
+  .note(0, 'G5', 127, 500).wait(500)
+  .note(0, 'C6', 127, 500);
+}
+</pre></button>
+
+<p>
+NOTE: Timbre.js may not work in IE9 and some other browsers.
+</p>
+
+</body>
+</html>

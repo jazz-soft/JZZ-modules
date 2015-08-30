@@ -5,7 +5,7 @@
   var _ac;
   var AudioContext = window.AudioContext || window.webkitAudioContext;
   if (AudioContext) _ac = new AudioContext();
-  if (!_ac.createGain) _ac.createGain = _ac.createGainNode;
+  if (_ac && !_ac.createGain) _ac.createGain = _ac.createGainNode;
 
   function Synth() {
     this.channels = [];
@@ -94,11 +94,11 @@
   }
 
   JZZ.synth.OSC = function(name) {
-    return JZZ._openMidiOut(name, _engine);
+    return JZZ.lib.openMidiOut(name, _engine);
   }
 
   JZZ.synth.OSC.register = function(name) {
-    return _ac ? JZZ._registerMidiOut(name, _engine) : false;
+    return _ac ? JZZ.lib.registerMidiOut(name, _engine) : false;
   }
 
 })();

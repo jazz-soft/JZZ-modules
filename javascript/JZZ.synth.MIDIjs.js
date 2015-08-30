@@ -2,6 +2,8 @@
   if (!JZZ) return;
   if (!JZZ.synth) JZZ.synth = {};
 
+  function _name(name) { return name ? name : 'JZZ.synth.MIDIjs'; }
+
   var _waiting = false;
   var _running = false;
   var _bad = false;
@@ -43,10 +45,9 @@
   var _engine = {};
 
   _engine._info = function(name) {
-    if (!name) name = 'MIDI.js';
     return {
       type: 'MIDI.js',
-      name: name,
+      name: _name(name),
       manufacturer: 'virtual',
       version: '0.3.2'
     };
@@ -78,14 +79,22 @@
     }
   }
 
-  JZZ.synth.MIDIjs = function(name, arg) {
+  JZZ.synth.MIDIjs = function() {
+    var name, arg;
+    if (arguments.length == 1) arg = arguments[0];
+    else { name = arguments[0]; arg = arguments[1];}
+    name = _name(name);
     if (!_running && !_waiting) _engine._arg = arg;
-    return JZZ._openMidiOut(name, _engine);
+    return JZZ.lib.openMidiOut(name, _engine);
   }
 
-  JZZ.synth.MIDIjs.register = function(name, arg) {
+  JZZ.synth.MIDIjs.register = function() {
+    var name, arg;
+    if (arguments.length == 1) arg = arguments[0];
+    else { name = arguments[0]; arg = arguments[1];}
+    name = _name(name);
     if (!_running && !_waiting) _engine._arg = arg;
-    return JZZ._registerMidiOut(name, _engine);
+    return JZZ.lib.registerMidiOut(name, _engine);
   }
 
 })();
