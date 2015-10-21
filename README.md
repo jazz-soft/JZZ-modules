@@ -88,11 +88,13 @@ See the [**demo**](https://jazz-soft.github.io/modules/osc).
 
 A wrapper for [**Qwerty-Hancock**](https://github.com/stuartmemo/qwerty-hancock) keyboard.
 
-[![windows](http://jazz-soft.github.io/img/windows.jpg)](https://jazz-soft.github.io/modules/osc)
-[![mocos](http://jazz-soft.github.io/img/macos.jpg)](https://jazz-soft.github.io/modules/osc)
-[![linux](http://jazz-soft.github.io/img/linux.jpg)](https://jazz-soft.github.io/modules/osc)
+[![windows](http://jazz-soft.github.io/img/windows.jpg)](https://jazz-soft.github.io/modules/qwerty)
+[![mocos](http://jazz-soft.github.io/img/macos.jpg)](https://jazz-soft.github.io/modules/qwerty)
+[![linux](http://jazz-soft.github.io/img/linux.jpg)](https://jazz-soft.github.io/modules/qwerty)
 
 Works wherewer the mouse and keyboard inputs are available.
+
+[![qwerty](http://jazz-soft.github.io/img/qwerty.png)](https://jazz-soft.github.io/modules/qwerty)
 
 ##### Example
 
@@ -100,10 +102,9 @@ Works wherewer the mouse and keyboard inputs are available.
     <script src='javascript/qwerty-hancock.js'></script>
     <script src='javascript/JZZ.input.Qwerty'></script>
     <script><!--
-    JZZ.input.Qwerty({id:'qwerty1',width:281,height:150,octaves:1,startNote:'C4'}).connect(JZZ().openMidiOut());
+    JZZ.input.Qwerty({id:'qwerty1', width:281, height:150, octaves:1, startNote:'C4'})
+       .connect(JZZ().openMidiOut());
     --></script>
-
-[![qwerty](http://jazz-soft.github.io/img/qwerty.png)](https://jazz-soft.github.io/modules/qwerty)
 
 See the [**demo**](https://jazz-soft.github.io/modules/qwerty).
 
