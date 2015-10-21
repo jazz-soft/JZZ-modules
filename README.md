@@ -28,7 +28,7 @@ See the [**demo**](https://jazz-soft.github.io/modules/midijs).
 
 ## JZZ.synth.Timbre
 
-A wrapper for [**Timbre.js**](https://github.com/mohayonao/timbre.js) T("PluckGen")/T("OscGen")/T("SynthDef") synths.
+A wrapper for the [**Timbre.js**](https://github.com/mohayonao/timbre.js) T("PluckGen")/T("OscGen")/T("SynthDef") synths.
 
 [![windows](http://jazz-soft.github.io/img/windows.jpg)](https://jazz-soft.github.io/modules/timbre)
 [![mocos](http://jazz-soft.github.io/img/macos.jpg)](https://jazz-soft.github.io/modules/timbre)
@@ -86,7 +86,7 @@ See the [**demo**](https://jazz-soft.github.io/modules/osc).
 
 ## JZZ.input.Qwerty
 
-A wrapper for [**Qwerty-Hancock**](https://github.com/stuartmemo/qwerty-hancock) keyboard.
+A wrapper for the [**Qwerty-Hancock**](https://github.com/stuartmemo/qwerty-hancock) keyboard.
 
 [![windows](http://jazz-soft.github.io/img/windows.jpg)](https://jazz-soft.github.io/modules/qwerty)
 [![mocos](http://jazz-soft.github.io/img/macos.jpg)](https://jazz-soft.github.io/modules/qwerty)
