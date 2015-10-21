@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>JZZ.input.Qwerty</title>
+<style type="text/css">
+button { text-align:left;}
+</style>
+<script src="../javascript/JZZ.js"></script>
+<script src="../javascript/JZZ.synth.OSC.js"></script>
+<script src="../javascript/JZZ.input.Qwerty.js"></script>
+<script src="../javascript/qwerty-hancock.js"></script>
+</head>
+
+<body>
+<h1>JZZ.input.Qwerty</h1>
+<p>JZZ.input.Qwerty(...)</p>
+<p id=qwerty1>qwerty1</p>
+<p>JZZ.input.Qwerty.register(...)</p>
+<p id=qwerty2>qwerty2</p>
+
+<script><!--
+JZZ.synth.OSC.register('Web Audio');
+var output = JZZ().openMidiOut();
+JZZ.input.Qwerty('qh1', { id: 'qwerty1', width: 281, height: 150, octaves: 1, startNote: 'C4' })
+     .or(function(){ alert('Cannot open MIDI In!\n' + this.err()); })
+     .connect(output);
+JZZ.input.Qwerty.register('qh2', { id: 'qwerty2', width: 281, height: 150, octaves: 1, startNote: 'C5' });
+JZZ().openMidiIn('qh2')
+     .or(function(){ alert('Cannot open MIDI In!\n' + this.err()); })
+     .connect(output);
+--></script>
+
+</body>
+</html>
