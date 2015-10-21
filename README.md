@@ -101,8 +101,11 @@ Works wherewer the mouse and keyboard inputs are available.
     <script src='javascript/JZZ.js'></script>
     <script src='javascript/qwerty-hancock.js'></script>
     <script src='javascript/JZZ.input.Qwerty'></script>
+    ...
+    <div id='qwerty'> here comes the piano! </div>
+    ...
     <script><!--
-    JZZ.input.Qwerty({id:'qwerty1', width:281, height:150, octaves:1, startNote:'C4'})
+    JZZ.input.Qwerty({id:'qwerty', width:281, height:150, octaves:1, startNote:'C4'})
        .connect(JZZ().openMidiOut());
     --></script>
 
