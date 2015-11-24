@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>JZZ.input.Kbd</title>
+<style type="text/css">
+span {display:inline-block}
+</style>
+<script src="../javascript/JZZ.js"></script>
+<script src="../javascript/JZZ.synth.OSC.js"></script>
+<script src="../javascript/JZZ.input.Kbd.js"></script>
+</head>
+
+<body>
+<h1>JZZ.input.Kbd</h1>
+
+<div id=resp></div>
+
+<div>
+<span id=left></span>
+<span>
+<div id=top></div>
+<div id=bottom></div>
+</span>
+<span id=right></span>
+</div>
+
+
+<script><!--
+JZZ.synth.OSC.register('Web Audio');
+var output = JZZ().openMidiOut();
+JZZ.input.Kbd.register('kbd', {parent:'resp', from:'C5', 0:{to:'B6'}, 740:{to:'E7'}, 900:{to:'B7'} });
+JZZ().openMidiIn('kbd').connect(output);
+JZZ.input.Kbd({parent:'left', pos:'E', wl:100, bl:60, from:'C5', to:'B5'})
+     .or(function(){ alert('Cannot open MIDI In!\n' + this.err()); })
+     .connect(output);
+JZZ.input.Kbd({parent:'right', pos:'W', ww:21, bw:12, from:'C5', to:'B6'})
+     .or(function(){ alert('Cannot open MIDI In!\n' + this.err()); })
+     .connect(output);
+JZZ.input.Kbd({parent:'top', pos:'N', from:'C5', to:'B5', rev:true})
+     .or(function(){ alert('Cannot open MIDI In!\n' + this.err()); })
+     .connect(output);
+JZZ.input.Kbd({parent:'bottom', pos:'S', from:'C5', to:'B5'})
+     .or(function(){ alert('Cannot open MIDI In!\n' + this.err()); })
+     .connect(output);
+--></script>
+
+</body>
+</html>
