@@ -111,6 +111,33 @@ Works wherewer the mouse and keyboard inputs are available.
 
 See the [**demo**](https://jazz-soft.github.io/modules/qwerty).
 
+## JZZ.input.Kbd
+
+Universal HTML keyboard for your MIDI projects.
+
+[![windows](http://jazz-soft.github.io/img/windows.jpg)](https://jazz-soft.github.io/modules/kbd)
+[![mocos](http://jazz-soft.github.io/img/macos.jpg)](https://jazz-soft.github.io/modules/kbd)
+[![linux](http://jazz-soft.github.io/img/linux.jpg)](https://jazz-soft.github.io/modules/kbd)
+[![ios](http://jazz-soft.github.io/img/ios.jpg)](https://jazz-soft.github.io/modules/kbd)
+[![android](http://jazz-soft.github.io/img/android.jpg)](https://jazz-soft.github.io/modules/kbd)
+
+Mouse and multitouch support.
+Fully customizeable.
+Ready for responsive design.
+
+[![kbd](http://jazz-soft.github.io/img/kbds.png)](https://jazz-soft.github.io/modules/kbd)
+
+##### Example
+
+    <script src='javascript/JZZ.js'></script>
+    <script src='javascript/JZZ.input.Kbd'></script>
+    ...
+    <script><!--
+    JZZ.input.Kbd().connect(JZZ().openMidiOut());
+    --></script>
+
+See the [**demo**](https://jazz-soft.github.io/modules/kbd).
+
 ### More modules are coming soon...
 
 [**How to create your own modules for JZZ.js**](http://jazz-soft.net/doc/JZZ/modules.html)

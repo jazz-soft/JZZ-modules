@@ -304,7 +304,7 @@
 
   Engine.prototype._info = function(name) {
     return {
-      type: 'gadget',
+      type: 'html/javascript',
       name: _name(name),
       manufacturer: 'virtual',
       version: _version
@@ -314,7 +314,7 @@
   Engine.prototype._openIn = function(port, name) {
     var piano = new Piano(this._arg);
     piano.create();
-    piano.noteOn = function(note) { port._event(JZZ.MIDI(0x90, note, 127)); };
+    piano.noteOn = function(note) { JZZ.util.iosSound(); port._event(JZZ.MIDI(0x90, note, 127)); };
     piano.noteOff = function(note) { port._event(JZZ.MIDI(0x80, note, 127)); };
     port._resume();
   }
