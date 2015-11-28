@@ -27,32 +27,61 @@
   }
   function _handleMouseDown(piano, midi) {
     return function(e) {
-      if (!(e.buttons & 1)) return;
+      if (!(e.buttons & 1) || piano.playing[midi]) return;
       piano.mouseDown = true;
-      piano.mouseMidi = midi;
+      piano.playing[midi] = 'M';
       piano.press(midi);
     };
   }
   function _handleMouseEnter(piano, midi) {
     return function(e) {
-      if (!piano.mouseDown) return;
-      piano.mouseMidi = midi;
+      if (!piano.mouseDown || piano.playing[midi]) return;
+      piano.playing[midi] = 'M';
       piano.press(midi);
     };
   }
   function _handleMouseLeave(piano, midi) {
     return function(e) {
-      if (!piano.mouseDown) return;
+      if (!piano.mouseDown || piano.playing[midi] != 'M') return;
+      piano.playing[midi] = undefined;
       piano.release(midi);
     };
   }
-  function _handleMouseUp(piano) {
+  function _handleMouseUp(piano, midi) {
+    return function(e) {
+      if (e.buttons & 1 || !piano.mouseDown) return;
+      if (piano.playing[midi] != 'M') return;
+      piano.playing[midi] = undefined;
+      piano.release(midi);
+    };
+  }
+  function _handleMouseOff(piano) {
     return function(e) {
       if (e.buttons & 1) return;
-      if (!piano.mouseDown) return;
-      var midi = piano.mouseMidi;
       piano.mouseDown = false;
-      piano.release(midi);
+    };
+  }
+  function _handleTouch(piano) {
+    return function(e) {
+      e.preventDefault();
+      var t = {};
+      for (var i in e.touches) piano.findKey(e.touches[i].clientX, e.touches[i].clientY, t);
+      var tt = {};
+      for (var midi in t) {
+        if (midi in piano.touches) tt[midi] = true;
+        else if (piano.playing[midi] === undefined) {
+          piano.playing[midi] = 'T';
+          piano.press(midi);
+          tt[midi] = true;
+        }
+      }
+      for (var midi in piano.touches) {
+        if (!(midi in t)) {
+          piano.playing[midi] = undefined;
+          piano.release(midi);
+        }
+      }
+      piano.touches = tt;
     };
   }
 
@@ -94,6 +123,18 @@
     _style(this.keys[midi], this.locs[midi]);
     this.noteOff(midi);
   }
+  Piano.prototype.findKey = function(x, y, ret) {
+    var found;
+    for (var midi in this.keys) {
+      var r = this.keys[midi].getBoundingClientRect();
+      if (x > r.left && x < r.right && y > r.top && y < r.bottom) {
+        found = midi;
+        var k = midi % 12;
+        if (k == 1 || k == 3 || k == 6 || k == 8 || k == 10) break;
+      }
+    }
+    if (found !== undefined) ret[found] = true;
+  }
   Piano.prototype.create = function() {
     var bin = 0;
     for (var i = 0; i < this.bins.length; i++) {
@@ -119,6 +160,7 @@
     parent.innerHTML = '';
     this.keys = {}; this.locs = {};
     this.stl0 = {}; this.stl1 = {};
+    this.playing = {}; this.touches = {};
     var pos = this.current.pos.toUpperCase();
     var first = _keyNum(this.current.from);
     var last = _keyNum(this.current.to);
@@ -225,9 +267,14 @@
       this.keys[midi].addEventListener("mousedown", _handleMouseDown(this, midi));
       this.keys[midi].addEventListener("mouseenter", _handleMouseEnter(this, midi));
       this.keys[midi].addEventListener("mouseleave", _handleMouseLeave(this, midi));
+      this.keys[midi].addEventListener("mouseup", _handleMouseUp(this, midi));
       this.keys[midi].ondragstart = function() { return false; };
     }
-    window.addEventListener("mouseup", _handleMouseUp(this));
+    window.addEventListener("mouseup", _handleMouseOff(this));
+    var touchHandle = _handleTouch(this);
+    piano.addEventListener("touchstart", touchHandle);
+    piano.addEventListener("touchmove", touchHandle);
+    piano.addEventListener("touchend", touchHandle);
 
     if (!this.parent && this.bins.length > 1) {
       var self = this;
