@@ -122,7 +122,7 @@ Universal HTML keyboard for your MIDI projects.
 [![android](http://jazz-soft.github.io/img/android.jpg)](https://jazz-soft.github.io/modules/kbd)
 
 Mouse and multitouch support.
-Supports custom styles.
+Custom styles.
 Ready for responsive design.
 
 [![kbd](http://jazz-soft.github.io/img/kbds.png)](https://jazz-soft.github.io/modules/kbd)
