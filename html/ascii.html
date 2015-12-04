@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>JZZ.input.ASCII</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<style type="text/css">
+span {display:inline-block;}
+.center {text-align:center;}
+.inner {position:absolute; bottom:0; left:0; width:100%; text-align:center;}
+</style>
+<script src="../javascript/JZZ.js"></script>
+<script src="../javascript/JZZ.synth.OSC.js"></script>
+<script src="../javascript/JZZ.input.Kbd.js"></script>
+<script src="../javascript/JZZ.input.ASCII.js"></script>
+</head>
+
+<body>
+<h1>JZZ.input.ASCII</h1>
+
+<span><div class=center>
+<div id=top></div>
+<div id=bottom></div>
+</div></span>
+<p>Mouse/touch input is disabled. Use ASCII keyboard.</p>
+
+
+<script><!--
+JZZ.synth.OSC.register('Web Audio');
+
+function keys1() {
+  this.getBlackKeys().setStyle({color:'#fff'});
+  this.getKey('C5').setInnerHTML('<span class=inner>Q</span>');
+  this.getKey('C#5').setInnerHTML('<span class=inner>2</span>');
+  this.getKey('D5').setInnerHTML('<span class=inner>W</span>');
+  this.getKey('D#5').setInnerHTML('<span class=inner>3</span>');
+  this.getKey('E5').setInnerHTML('<span class=inner>E</span>');
+  this.getKey('F5').setInnerHTML('<span class=inner>R</span>');
+  this.getKey('F#5').setInnerHTML('<span class=inner>5</span>');
+  this.getKey('G5').setInnerHTML('<span class=inner>T</span>');
+  this.getKey('G#5').setInnerHTML('<span class=inner>6</span>');
+  this.getKey('A5').setInnerHTML('<span class=inner>Y</span>');
+  this.getKey('A#5').setInnerHTML('<span class=inner>7</span>');
+  this.getKey('B5').setInnerHTML('<span class=inner>U</span>');
+  this.getKey('C6').setInnerHTML('<span class=inner>I</span>');
+  this.getKey('C#6').setInnerHTML('<span class=inner>9</span>');
+  this.getKey('D6').setInnerHTML('<span class=inner>O</span>');
+  this.getKey('D#6').setInnerHTML('<span class=inner>0</span>');
+  this.getKey('E6').setInnerHTML('<span class=inner>P</span>');
+  this.getKey('F6').setInnerHTML('<span class=inner>[</span>');
+  this.getKey('F#6').setInnerHTML('<span class=inner>+</span>');
+  this.getKey('G6').setInnerHTML('<span class=inner>]</span>');
+}
+function keys2() {
+  this.getBlackKeys().setStyle({color:'#fff'});
+  this.getKey('C5').setInnerHTML('<span class=inner>Z</span>');
+  this.getKey('C#5').setInnerHTML('<span class=inner>S</span>');
+  this.getKey('D5').setInnerHTML('<span class=inner>X</span>');
+  this.getKey('D#5').setInnerHTML('<span class=inner>D</span>');
+  this.getKey('E5').setInnerHTML('<span class=inner>C</span>');
+  this.getKey('F5').setInnerHTML('<span class=inner>V</span>');
+  this.getKey('F#5').setInnerHTML('<span class=inner>G</span>');
+  this.getKey('G5').setInnerHTML('<span class=inner>B</span>');
+  this.getKey('G#5').setInnerHTML('<span class=inner>H</span>');
+  this.getKey('A5').setInnerHTML('<span class=inner>N</span>');
+  this.getKey('A#5').setInnerHTML('<span class=inner>J</span>');
+  this.getKey('B5').setInnerHTML('<span class=inner>M</span>');
+  this.getKey('C6').setInnerHTML('<span class=inner>&lt;</span>');
+  this.getKey('C#6').setInnerHTML('<span class=inner>L</span>');
+  this.getKey('D6').setInnerHTML('<span class=inner>&gt;</span>');
+  this.getKey('D#6').setInnerHTML('<span class=inner>:</span>');
+  this.getKey('E6').setInnerHTML('<span class=inner>?</span>');
+}
+
+var piano1 = JZZ.input.Kbd({parent:'top', from:'C5', to:'G6', onCreate:keys1, active:false}).connect(JZZ().openMidiOut());
+
+JZZ.input.Kbd.register({parent:'bottom', from:'C5', to:'E6', active:false})
+var piano2 = JZZ().openMidiIn('Kbd').and(keys2).connect(JZZ().openMidiOut());
+
+JZZ.input.ASCII({
+  Q:'C5', 2:'C#5', W:'D5', 3:'D#5', E:'E5', R:'F5', 5:'F#5', T:'G5', 6:'Ab5', Y:'A5',
+  7:'Bb5', U:'B5', I:'C6', 9:'C#6', O:'D6', 0:'D#6', P:'E6', '[':'F6', '+':'F#6', ']':'G6'
+}).connect(piano1);
+
+JZZ.input.ASCII.register({
+  Z:'C5', S:'C#5', X:'D5', D:'D#5', C:'E5', V:'F5', G:'F#5', B:'G5', H:'Ab5',
+  N:'A5', J:'Bb5', M:'B5', '<':'C6', L:'C#6', '>':'D6', ';':'D#6', '/':'E6'
+});
+JZZ().openMidiIn('ASCII').connect(piano2);
+--></script>
+
+</body>
+</html>

@@ -122,7 +122,7 @@ Universal HTML keyboard for your MIDI projects.
 [![android](http://jazz-soft.github.io/img/android.jpg)](https://jazz-soft.github.io/modules/kbd)
 
 Mouse and multitouch support.
-Fully customizeable.
+Supports custom styles.
 Ready for responsive design.
 
 [![kbd](http://jazz-soft.github.io/img/kbds.png)](https://jazz-soft.github.io/modules/kbd)
@@ -137,6 +137,33 @@ Ready for responsive design.
     --></script>
 
 See the [**demo**](https://jazz-soft.github.io/modules/kbd).
+
+## JZZ.input.ASCII
+
+ASCII keyboard as MIDI input.
+
+[![windows](http://jazz-soft.github.io/img/windows.jpg)](https://jazz-soft.github.io/modules/ascii)
+[![mocos](http://jazz-soft.github.io/img/macos.jpg)](https://jazz-soft.github.io/modules/ascii)
+[![linux](http://jazz-soft.github.io/img/linux.jpg)](https://jazz-soft.github.io/modules/ascii)
+
+Can be connected to JZZ.input.Kbd to enable both keyboard and mouse/touch input.
+
+##### Example
+
+    <script src='javascript/JZZ.js'></script>
+    <script src='javascript/JZZ.input.ASCII'></script>
+    ...
+    <script><!--
+    JZZ.input.ASCII({
+         //  S D   G H J
+         // Z X C V B N M
+         Z:'C5', S:'C#5', X:'D5', D:'D#5', C:'E5', V:'F5',
+         G:'F#5', B:'G5', H:'Ab5', N:'A5', J:'Bb5', M:'B5'
+       }).connect(JZZ().openMidiOut());
+    --></script>
+
+See the [**demo**](https://jazz-soft.github.io/modules/ascii).
+
 
 ### More modules are coming soon...
 

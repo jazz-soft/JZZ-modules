@@ -7,6 +7,7 @@
 span {display:inline-block;}
 .center {text-align:center;}
 .middle {vertical-align:middle;}
+.inner {position:absolute; bottom:0; left:0; width:100%;}
 </style>
 <script src="../javascript/JZZ.js"></script>
 <script src="../javascript/JZZ.synth.OSC.js"></script>
@@ -31,18 +32,59 @@ span {display:inline-block;}
 JZZ.synth.OSC.register('Web Audio');
 var output = JZZ().openMidiOut();
 JZZ.input.Kbd.register('kbd', {parent:'resp', from:'C5', 0:{to:'B6'}, 740:{to:'E7'}, 900:{to:'B7'} });
-JZZ().openMidiIn('kbd').connect(output);
+JZZ().openMidiIn('kbd').connect(output)
+     .or(function(){ alert('Cannot open MIDI In!\n' + this.err()); });
 JZZ.input.Kbd({parent:'left', pos:'E', wl:100, bl:60, from:'C5', to:'B5'})
      .or(function(){ alert('Cannot open MIDI In!\n' + this.err()); })
+     .and(function(){
+       this.getKeys().setStyle({borderColor:'#00f', borderTopLeftRadius:'8px', borderBottomLeftRadius:'8px'});
+       this.getWhiteKeys().setStyle({backgroundColor:'#fed'}, {backgroundColor:'#dbf'});
+       this.getBlackKeys().setStyle({backgroundColor:'#d0f'}, {backgroundColor:'#dbf'});
+      })
      .connect(output);
 JZZ.input.Kbd({parent:'right', pos:'W', ww:21, bw:12, from:'C5', to:'B6'})
      .or(function(){ alert('Cannot open MIDI In!\n' + this.err()); })
+     .and(function(){
+       this.getKeys().setStyle({borderColor:'#888', borderTopRightRadius:'5px', borderBottomRightRadius:'5px'});
+       this.getWhiteKeys('C5', 'B5').setStyle({backgroundColor:'#e00'}, {});
+       this.getBlackKeys('C5', 'B5').setStyle({backgroundColor:'#fff'}, {});
+      })
      .connect(output);
 JZZ.input.Kbd({parent:'top', pos:'N', from:'C5', to:'B5', rev:true})
      .or(function(){ alert('Cannot open MIDI In!\n' + this.err()); })
+     .and(function() {
+       this.getKey('C5').setInnerHTML('<span class=inner>C</span>');
+       this.getKey('D5').setInnerHTML('<span class=inner>D</span>');
+       this.getKey('E5').setInnerHTML('<span class=inner>E</span>');
+       this.getKey('F5').setInnerHTML('<span class=inner>F</span>');
+       this.getKey('G5').setInnerHTML('<span class=inner>G</span>');
+       this.getKey('A5').setInnerHTML('<span class=inner>A</span>');
+       this.getKey('B5').setInnerHTML('<span class=inner>B</span>');
+       this.getKey('C#5').setStyle({backgroundColor:'#f00'}, {});
+       this.getKey('D#5').setStyle({backgroundColor:'#ff0'}, {});
+       this.getKey('F#5').setStyle({backgroundColor:'#0f0'}, {});
+       this.getKey('G#5').setStyle({backgroundColor:'#00f'}, {});
+       this.getKey('A#5').setStyle({backgroundColor:'#a0c'}, {});
+     })
      .connect(output);
-JZZ.input.Kbd({parent:'bottom', pos:'S', from:'C5', to:'B5'})
+JZZ.input.Kbd({parent:'bottom', pos:'S', wl:126, bl:80, from:'C5', to:'B5'})
      .or(function(){ alert('Cannot open MIDI In!\n' + this.err()); })
+     .and(function() {
+       this.getWhiteKeys().setStyle({backgroundImage:'url("bgw.png")'}, {backgroundImage:'url("bg1.png")'});
+       this.getBlackKeys().setStyle({backgroundImage:'url("bgb.png")'}, {backgroundImage:'url("bg1.png")'});
+       this.getKey('B5').setStyle({ backgroundPosition:'-1px'});
+       this.getKey('A5').setStyle({ backgroundPosition:'-43px'});
+       this.getKey('G5').setStyle({ backgroundPosition:'-85px'});
+       this.getKey('F5').setStyle({ backgroundPosition:'-127px'});
+       this.getKey('E5').setStyle({ backgroundPosition:'-169px'});
+       this.getKey('D5').setStyle({ backgroundPosition:'-211px'});
+       this.getKey('C5').setStyle({ backgroundPosition:'-253px'});
+       this.getKey('Bb5').setStyle({ backgroundPosition:'-24px -46px'});
+       this.getKey('Ab5').setStyle({ backgroundPosition:'-72px -46px'});
+       this.getKey('F#5').setStyle({ backgroundPosition:'-120px -46px'});
+       this.getKey('Eb5').setStyle({ backgroundPosition:'-195px -46px'});
+       this.getKey('C#5').setStyle({ backgroundPosition:'-243px -46px'});
+     })
      .connect(output);
 --></script>
 
