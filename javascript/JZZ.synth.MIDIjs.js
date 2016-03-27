@@ -22,11 +22,8 @@
 
   var _ports = [];
   function _release(port, name) {
-    port._impl = {
-      name: name,
-      info: _engine._info(name),
-      _send: _send
-    };
+    port._info = _engine._info(name);
+    port._send = _send;
     port._resume();
   }
 

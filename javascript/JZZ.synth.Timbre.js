@@ -46,17 +46,9 @@
     if (!_loaded()) { port._crash('Timbre.js is not loaded'); return;}
     if (!_synth[name]) { port._crash('Port ' + name + ' not found'); return;}
     if (!_valid(_synth[name]._T)) { port._crash('Not a valid synth'); return;}
-
-    if (!_synth[name]) {
-      _synth[name] = {
-        name: name,
-        info: _engine._info(name),
-        _synth: new Synth,
-        _send: function(msg) { this._synth.play(msg); }
-      };
-    }
-
-    port._impl = _synth[name];
+    if (!_synth[name]) _synth[name] = new Synth;
+    port._info = _engine._info(name);
+    port._send = function(msg) { _synth[name]._send(msg); }
     port._resume();
   }
 
