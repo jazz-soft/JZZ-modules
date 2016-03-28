@@ -21,7 +21,7 @@ span {display:inline-block;}
 <div id=top></div>
 <div id=bottom></div>
 </div></span>
-<p>Mouse/touch input is disabled. Use ASCII keyboard.</p>
+<p>Mouse/touch input is disabled. Use the ASCII keyboard.</p>
 
 
 <script><!--
@@ -73,7 +73,7 @@ function keys2() {
 
 var piano1 = JZZ.input.Kbd({parent:'top', from:'C5', to:'G6', onCreate:keys1, active:false}).connect(JZZ().openMidiOut());
 
-JZZ.input.Kbd.register({parent:'bottom', from:'C5', to:'E6', active:false})
+JZZ.input.Kbd.register({parent:'bottom', from:'C5', to:'E6', active:false, channel:1})
 var piano2 = JZZ().openMidiIn('Kbd').and(keys2).connect(JZZ().openMidiOut());
 
 JZZ.input.ASCII({
@@ -83,7 +83,7 @@ JZZ.input.ASCII({
 
 JZZ.input.ASCII.register({
   Z:'C5', S:'C#5', X:'D5', D:'D#5', C:'E5', V:'F5', G:'F#5', B:'G5', H:'Ab5',
-  N:'A5', J:'Bb5', M:'B5', '<':'C6', L:'C#6', '>':'D6', ';':'D#6', '/':'E6'
+  N:'A5', J:'Bb5', M:'B5', '<':'C6', L:'C#6', '>':'D6', ';':'D#6', '/':'E6', channel:1
 });
 JZZ().openMidiIn('ASCII').connect(piano2);
 --></script>

@@ -2,7 +2,7 @@
   if (!JZZ) return;
   if (!JZZ.input) JZZ.input = {};
 
-  var _version = '0.3';
+  var _version = '0.4';
   function _name(name) { return name ? name : 'Kbd'; }
 
   function _copy(obj) {
@@ -86,16 +86,22 @@
     };
   }
 
+  var _channelMap = { a:10, b:11, c:12, d:13, e:14, f:15, A:10, B:11, C:12, D:13, E:14, F:15 };
+  for (var k = 0; k < 16; k++) _channelMap[k] = k;
+
   function Piano(arg) {
     var self = this;
     this.bins = [];
     this.params = {0:{}};
     var common = {from:'C4', to:'E6', ww:42, bw:24, wl:150, bl:100, pos:'N'};
     if (arg === undefined) arg = {};
+    this.channel = _channelMap[arg.channel];
+    if (this.channel === undefined) this.channel = 0;
     var key;
     for (key in arg) {
       if (key == parseInt(key)) this.params[key] = _copy(arg[key]);
       else {
+        if (key == 'channel') continue;
         if ((key == 'from' || key == 'to') && _keyNum(arg[key]) === undefined) continue;
         common[key] = arg[key];
       }
@@ -132,15 +138,17 @@
   }
   Piano.prototype.external = function(msg) {
     var midi = msg[1];
-    if (msg[0] == 0x90) {
-      this.playing[midi] = 'E';
-      _style(this.keys[midi], this.stl1[midi]);
-      _style(this.keys[midi], this.locs[midi]);
-    }
-    else if (msg[0] == 0x80) {
-      this.playing[midi] = undefined;
-      _style(this.keys[midi], this.stl0[midi]);
-      _style(this.keys[midi], this.locs[midi]);
+    if (msg.getChannel() == this.channel) {
+      if (msg.isNoteOn()) {
+        this.playing[midi] = 'E';
+        _style(this.keys[midi], this.stl1[midi]);
+        _style(this.keys[midi], this.locs[midi]);
+      }
+      else if (msg.isNoteOff()) {
+        this.playing[midi] = undefined;
+        _style(this.keys[midi], this.stl0[midi]);
+        _style(this.keys[midi], this.locs[midi]);
+      }
     }
     this.forward(msg);
   }
