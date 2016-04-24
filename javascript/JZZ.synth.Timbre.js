@@ -13,10 +13,10 @@
     this._T = synth;
     this.info = _engine._info(name);
     this.name = this.info.name;
-    this._send = _send;
+    this._receive = _receive;
   }
 
-  function _send(msg) {
+  function _receive(msg) {
     var s = msg[0];
     var n = msg[1];
     var v = msg[2];
@@ -48,7 +48,7 @@
     if (!_valid(_synth[name]._T)) { port._crash('Not a valid synth'); return;}
     if (!_synth[name]) _synth[name] = new Synth;
     port._info = _engine._info(name);
-    port._send = function(msg) { _synth[name]._send(msg); }
+    port._receive = function(msg) { _synth[name]._receive(msg); }
     port._resume();
   }
 

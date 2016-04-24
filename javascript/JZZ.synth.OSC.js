@@ -75,7 +75,7 @@
       type: 'Web Audo',
       name: name,
       manufacturer: 'virtual',
-      version: '0.1'
+      version: '0.2'
     };
   }
 
@@ -83,7 +83,7 @@
     if (!_ac) { port._crash('AudioContext not supported'); return;}
     if (!_synth[name]) _synth[name] = new Synth;
     port._info = _engine._info(name);
-    port._send = function(msg) { _synth[name].play(msg); };
+    port._receive = function(msg) { _synth[name].play(msg); };
     port._resume();
   }
 

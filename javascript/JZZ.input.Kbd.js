@@ -2,7 +2,7 @@
   if (!JZZ) return;
   if (!JZZ.input) JZZ.input = {};
 
-  var _version = '0.4';
+  var _version = '0.5';
   function _name(name) { return name ? name : 'Kbd'; }
 
   function _copy(obj) {
@@ -412,10 +412,10 @@
   Engine.prototype._openIn = function(port, name) {
     var piano = new Piano(this._arg);
     piano.create();
-    piano.noteOn = function(note) { JZZ.util.iosSound(); port._event(JZZ.MIDI(0x90, note, 127)); };
-    piano.noteOff = function(note) { port._event(JZZ.MIDI(0x80, note, 127)); };
-    piano.forward = function(msg) { port._event(msg); };
-    port._send = function(msg) { piano.external(msg); };
+    piano.noteOn = function(note) { JZZ.util.iosSound(); port._emit(JZZ.MIDI(0x90, note, 127)); };
+    piano.noteOff = function(note) { port._emit(JZZ.MIDI(0x80, note, 127)); };
+    piano.forward = function(msg) { port._emit(msg); };
+    port._receive = function(msg) { piano.external(msg); };
     port._close = function(){ piano._close(); }
     port.getKey = function(note) { return piano.getKey(note); }
     port.getKeys = function(a, b) { return piano.getKeys(a, b); }

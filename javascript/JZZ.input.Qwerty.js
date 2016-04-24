@@ -31,10 +31,10 @@
       var qwerty = new QwertyHancock(this._arg);
       qwerty.keyDown = function (note, frequency) {
         JZZ.util.iosSound(); // just for case
-        port._event(JZZ.MIDI(0x90, note, 127));
+        port._emit(JZZ.MIDI(0x90, note, 127));
       };
       qwerty.keyUp = function (note, frequency) {
-        port._event(JZZ.MIDI(0x80, note, 127));
+        port._emit(JZZ.MIDI(0x80, note, 127));
       };
     }
     catch (e) {

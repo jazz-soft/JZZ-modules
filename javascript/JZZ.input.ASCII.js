@@ -2,7 +2,7 @@
   if (!JZZ) return;
   if (!JZZ.input) JZZ.input = {};
 
-  var _version = '0.3';
+  var _version = '0.4';
   function _name(name) { return name ? name : 'ASCII'; }
 
   var _keycode = {
@@ -64,8 +64,8 @@
 
   Engine.prototype._openIn = function(port, name) {
     var keyboard = new Keyboard(this._arg);
-    keyboard.noteOn = function(note) { port._event(JZZ.MIDI(0x90 + this.channel, note, 127)); };
-    keyboard.noteOff = function(note) { port._event(JZZ.MIDI(0x80 + this.channel, note, 127)); };
+    keyboard.noteOn = function(note) { port._emit(JZZ.MIDI(0x90 + this.channel, note, 127)); };
+    keyboard.noteOff = function(note) { port._emit(JZZ.MIDI(0x80 + this.channel, note, 127)); };
     port._close = function() { keyboard._close(); }
     port._resume();
   }

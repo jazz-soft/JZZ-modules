@@ -9,7 +9,7 @@
   var _bad = false;
   var _error;
 
-  function _send(a) {
+  function _receive(a) {
     var s = a[0]>>4;
     var c = a[0]&0xf;
     if (s == 0x8) {
@@ -23,7 +23,7 @@
   var _ports = [];
   function _release(port, name) {
     port._info = _engine._info(name);
-    port._send = _send;
+    port._receive = _receive;
     port._resume();
   }
 
