@@ -10,9 +10,9 @@
   "homepage": "http://jazz-soft.net",
   "bugs": "http://jazz-soft.org",
   "license": "MIT",
-  "private": true,
   "devDependencies": {
     "grunt": ">=0.4.5",
-    "grunt-contrib-uglify": ">=0.9.1"
-  }
+    "grunt-contrib-uglify": ">=1.0.0"
+  },
+  "private": true
 }

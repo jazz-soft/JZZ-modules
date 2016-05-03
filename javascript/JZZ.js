@@ -1,6 +1,6 @@
 (function() {
 
-  var _version = '0.3.4';
+  var _version = '0.3.5';
 
   // _R: common root for all async objects
   function _R() {
@@ -474,6 +474,7 @@
       }
       port._orig._impl = impl;
       _push(impl.clients, port._orig);
+      port._info = impl.info;
       port._receive = function(arg) { impl._receive(arg); }
       port._close = function() { impl._close(this); }
     }
@@ -515,6 +516,7 @@
       }
       port._orig._impl = impl;
       _push(impl.clients, port._orig);
+      port._info = impl.info;
       port._close = function() { impl._close(this); }
     }
     _engine._closeOut = function(port) {
@@ -604,6 +606,7 @@
       if (impl) {
         port._orig._impl = impl;
         _push(impl.clients, port._orig);
+        port._info = impl.info;
         port._receive = function(arg) { impl._receive(arg); }
         port._close = function() { impl._close(this); }
       }
@@ -643,6 +646,7 @@
       if (impl) {
         port._orig._impl = impl;
         _push(impl.clients, port._orig);
+        port._info = impl.info;
         port._close = function() { impl._close(this); }
       }
       else port._break();
@@ -707,6 +711,7 @@
       }
       port._orig._impl = impl;
       _push(impl.clients, port._orig);
+      port._info = impl.info;
       port._receive = function(arg) { impl._receive(arg); }
       port._close = function() { impl._close(this); }
       if (!impl.open) port._pause();
@@ -737,6 +742,7 @@
       }
       port._orig._impl = impl;
       _push(impl.clients, port._orig);
+      port._info = impl.info;
       port._close = function() { impl._close(this); }
       if (!impl.open) port._pause();
     }
