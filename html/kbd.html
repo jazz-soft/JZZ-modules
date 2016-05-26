@@ -32,8 +32,9 @@ span {display:inline-block;}
 JZZ.synth.OSC.register('Web Audio');
 var output = JZZ().openMidiOut();
 JZZ.input.Kbd.register('kbd', {parent:'resp', from:'C5', 0:{to:'B6'}, 740:{to:'E7'}, 900:{to:'B7'} });
-JZZ().openMidiIn('kbd').connect(output)
-     .or(function(){ alert('Cannot open MIDI In!\n' + this.err()); });
+JZZ().openMidiIn('kbd')
+     .or(function(){ alert('Cannot open MIDI In!\n' + this.err()); })
+     .connect(output);
 JZZ.input.Kbd({parent:'left', pos:'E', wl:100, bl:60, from:'C5', to:'B5'})
      .or(function(){ alert('Cannot open MIDI In!\n' + this.err()); })
      .and(function(){

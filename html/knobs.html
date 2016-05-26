@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>JZZ.input.Knobs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<style type="text/css">
+#msg {
+ width:100%;
+ height:24em;
+ margin:0;
+ padding:0;
+ background-color:#eee;
+ border:solid 1px #888;
+ white-space:pre;
+ font-family:Courier New, monospace;
+ overflow:auto;
+ display:block;
+}
+</style>
+<script src="../javascript/JZZ.js"></script>
+<script src="../javascript/JZZ.synth.OSC.js"></script>
+<script src="../javascript/JZZ.input.ASCII.js"></script>
+<script src="../javascript/JZZ.input.Kbd.js"></script>
+<script src="../javascript/JZZ.input.Knobs.js"></script>
+</head>
+
+<body>
+<h1>JZZ.input.Knobs</h1>
+
+<div id=resp class=center></div>
+
+<div>
+<span id=knob1></span>
+<span id=knob2></span>
+<span id=knob4></span>
+<span id=knob3></span>
+<span id=piano></span>
+</div>
+<div id=msg></div>
+
+<script><!--
+JZZ.synth.OSC.register('Web Audio');
+var output = JZZ().openMidiOut();
+
+function onMsg(msg) {
+  print_msg(this.name(), msg);
+}
+
+var piano = JZZ.input.Kbd('Piano', {parent:'piano'}).or(function(){ alert('Cannot open MIDI In!\n' + this.err()); });
+piano.connect(output).connect(onMsg);
+
+JZZ.input.ASCII({
+  A:'F#4', Z:'G4', S:'G#4', X:'A4', D:'Bb4', C:'B4', V:'C5', G:'C#5', B:'D5',
+  H:'D#5', N:'E5', M:'F5', K:'F#5', '<':'G5', L:'G#5', '>':'A5', ':':'Bb5'
+}).connect(piano);
+
+var knob1 = JZZ.input.Slider('Slider 1', {parent:'knob1'}).or(function(){ alert('Cannot open MIDI In!\n' + this.err()); });
+knob1.connect(output).connect(onMsg);
+
+var knob2 = JZZ.input.Slider('Slider 2', {parent:'knob2', data:'mod'}).or(function(){ alert('Cannot open MIDI In!\n' + this.err()); });
+knob2.connect(output).connect(onMsg);
+
+var knob3 = JZZ.input.Slider('Slider 3', {parent:'knob3', data:[4, 36]}).or(function(){ alert('Cannot open MIDI In!\n' + this.err()); });
+knob3.connect(output).connect(onMsg);
+
+var knob4 = JZZ.input.Slider('Slider 4', {parent:'knob4', data:'foot'}).or(function(){ alert('Cannot open MIDI In!\n' + this.err()); });
+knob4.connect(knob3);
+
+var msgarea=document.getElementById('msg');
+var out = [];
+function print_msg(name, msg, dir) {
+  out.push(name + (dir ? " &lt;&lt; " : " &gt;&gt; ") + JZZ.MIDI(msg));
+  if (out.length > 20) out = out.slice(1);
+  msgarea.innerHTML = out.join('<br>');
+  msgarea.scrollTop=msgarea.scrollHeight;
+}
+--></script>
+
+</body>
+</html>

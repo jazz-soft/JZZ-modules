@@ -2,7 +2,7 @@
   if (!JZZ) return;
   if (!JZZ.input) JZZ.input = {};
 
-  var _version = '0.5';
+  var _version = '0.6';
   function _name(name) { return name ? name : 'Kbd'; }
 
   function _copy(obj) {
@@ -10,6 +10,9 @@
     for(var k in obj) ret[k] = obj[k];
     return ret;
   }
+  function _lftBtnDn(e) { return e.buttons === undefined ? !e.button : e.buttons & 1; }
+  function _lftBtnUp(e) { return e.buttons === undefined ? !e.button : !(e.buttons & 1); }
+  function _stay(c, p) { for (; c; c = c.parentNode) if (c == p) return true; return false; }
   function _returnFalse() { return false; }
   function _style(key, stl) {
     for(var k in stl) key.style[k] = stl[k];
@@ -28,29 +31,29 @@
   }
   function _handleMouseDown(piano, midi) {
     return function(e) {
-      if (!(e.buttons & 1) || piano.playing[midi]) return;
+      if (!_lftBtnDn(e) || piano.playing[midi]) return;
       piano.mouseDown = true;
       piano.playing[midi] = 'M';
       piano.press(midi);
     };
   }
-  function _handleMouseEnter(piano, midi) {
+  function _handleMouseOver(piano, midi) {
     return function(e) {
       if (!piano.mouseDown || piano.playing[midi]) return;
       piano.playing[midi] = 'M';
       piano.press(midi);
     };
   }
-  function _handleMouseLeave(piano, midi) {
+  function _handleMouseOut(piano, midi) {
     return function(e) {
-      if (!piano.mouseDown || piano.playing[midi] != 'M') return;
+      if (!piano.mouseDown || piano.playing[midi] != 'M' || _stay(e.relatedTarget, this)) return;
       piano.playing[midi] = undefined;
       piano.release(midi);
     };
   }
   function _handleMouseUp(piano, midi) {
     return function(e) {
-      if (e.buttons & 1 || !piano.mouseDown) return;
+      if (!_lftBtnUp(e) || !piano.mouseDown) return;
       if (piano.playing[midi] != 'M') return;
       piano.playing[midi] = undefined;
       piano.release(midi);
@@ -58,7 +61,7 @@
   }
   function _handleMouseOff(piano) {
     return function(e) {
-      if (e.buttons & 1) return;
+      if (!_lftBtnUp(e)) return;
       piano.mouseDown = false;
     };
   }
@@ -120,11 +123,11 @@
       }
     }
     this.bins.sort(function(a, b){return a-b});
-    this._close = function() { // _impl = self
-      for (var midi in self.playing) if (self.playing[midi] == 'M' || self.playing[midi] == 'T') self.noteOff(midi);;
-      if (self.parent) self.parent.innerHTML = '';
-      window.removeEventListener("mouseup", self.mouseUpHandler);
-    }
+  }
+  Piano.prototype._close = function() {
+    for (var midi in this.playing) if (this.playing[midi] == 'M' || this.playing[midi] == 'T') this.noteOff(midi);
+    if (this.parent) this.parent.innerHTML = '';
+    if (this.mouseUpHandler) window.removeEventListener("mouseup", this.mouseUpHandler);
   }
   Piano.prototype.press = function(midi) {
     _style(this.keys[midi], this.stl1[midi]);
@@ -136,7 +139,7 @@
     _style(this.keys[midi], this.locs[midi]);
     this.noteOff(midi);
   }
-  Piano.prototype.external = function(msg) {
+  Piano.prototype.forward = function(msg) {
     var midi = msg[1];
     if (msg.getChannel() == this.channel) {
       if (msg.isNoteOn()) {
@@ -150,7 +153,7 @@
         _style(this.keys[midi], this.locs[midi]);
       }
     }
-    this.forward(msg);
+    this.emit(msg);
   }
   Piano.prototype.findKey = function(x, y, ret) {
     var found;
@@ -300,8 +303,8 @@
     for (midi in this.keys) {
       if (active) {
         this.keys[midi].addEventListener("mousedown", _handleMouseDown(this, midi));
-        this.keys[midi].addEventListener("mouseenter", _handleMouseEnter(this, midi));
-        this.keys[midi].addEventListener("mouseleave", _handleMouseLeave(this, midi));
+        this.keys[midi].addEventListener("mouseover", _handleMouseOver(this, midi));
+        this.keys[midi].addEventListener("mouseout", _handleMouseOut(this, midi));
         this.keys[midi].addEventListener("mouseup", _handleMouseUp(this, midi));
       }
       this.keys[midi].ondragstart = _returnFalse;
@@ -414,8 +417,9 @@
     piano.create();
     piano.noteOn = function(note) { JZZ.util.iosSound(); port._emit(JZZ.MIDI(0x90, note, 127)); };
     piano.noteOff = function(note) { port._emit(JZZ.MIDI(0x80, note, 127)); };
-    piano.forward = function(msg) { port._emit(msg); };
-    port._receive = function(msg) { piano.external(msg); };
+    piano.emit = function(msg) { port._emit(msg); };
+    port._info = this._info(name);
+    port._receive = function(msg) { piano.forward(msg); };
     port._close = function(){ piano._close(); }
     port.getKey = function(note) { return piano.getKey(note); }
     port.getKeys = function(a, b) { return piano.getKeys(a, b); }

@@ -40,6 +40,7 @@
     catch (e) {
       port._crash(e.toString());
     }
+    port._info = this._info(name);
     port._resume();
   }
 
