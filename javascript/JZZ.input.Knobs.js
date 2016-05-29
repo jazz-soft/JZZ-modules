@@ -16,121 +16,9 @@
   function _style(key, stl) {
     for(var k in stl) key.style[k] = stl[k];
   }
-
-  function _handleTouch(piano) {
-    return function(e) {
-      e.preventDefault();
-      var t = {};
-      for (var i in e.touches) piano.findKey(e.touches[i].clientX, e.touches[i].clientY, t);
-      var tt = {};
-      for (var midi in t) {
-        if (midi in piano.touches) tt[midi] = true;
-        else if (piano.playing[midi] === undefined) {
-          piano.playing[midi] = 'T';
-          piano.press(midi);
-          tt[midi] = true;
-        }
-      }
-      for (var midi in piano.touches) {
-        if (!(midi in t)) {
-          piano.playing[midi] = undefined;
-          piano.release(midi);
-        }
-      }
-      piano.touches = tt;
-    };
-  }
-
   var _channelMap = { a:10, b:11, c:12, d:13, e:14, f:15, A:10, B:11, C:12, D:13, E:14, F:15 };
   for (var k = 0; k < 16; k++) _channelMap[k] = k;
 
-  function Piano(arg) {
-    var self = this;
-    this.bins = [];
-    this.params = {0:{}};
-    var common = {from:'C4', to:'E6', ww:42, bw:24, wl:150, bl:100, pos:'N'};
-    if (arg === undefined) arg = {};
-    this.channel = _channelMap[arg.channel];
-    if (this.channel === undefined) this.channel = 0;
-    var key;
-    for (key in arg) {
-      if (key == parseInt(key)) this.params[key] = _copy(arg[key]);
-      else {
-        if (key == 'channel') continue;
-        if ((key == 'from' || key == 'to') && _keyNum(arg[key]) === undefined) continue;
-        common[key] = arg[key];
-      }
-    }
-    for (key in this.params) {
-      this.bins.push(key);
-      for (var k in common) {
-        if ((k == 'from' || k == 'to') && _keyNum(this.params[key][k]) === undefined) this.params[key][k] = common[k];
-        if (!(k in this.params[key])) this.params[key][k] = common[k];
-      }
-      var from = this.params[key]['from'];
-      var to = this.params[key]['to'];
-      if (_keyNum(from) > _keyNum(to)) {
-        this.params[key]['from'] = to;
-        this.params[key]['to'] = from;
-      }
-    }
-    this.bins.sort(function(a, b){return a-b});
-    this._close = function() { // _impl = self
-      for (var midi in self.playing) if (self.playing[midi] == 'M' || self.playing[midi] == 'T') self.noteOff(midi);;
-      if (self.parent) self.parent.innerHTML = '';
-      window.removeEventListener("mouseup", self.mouseUpHandler);
-    }
-  }
-
-  Piano.prototype.onResize = function() {
-    var bin = 0;
-    for (var i = 0; i < this.bins.length; i++) {
-      if (this.bins[i] <= window.innerWidth) bin = this.bins[i];
-      else break;
-    }
-    if (this.current == this.params[bin]) return;
-    this.current = this.params[bin];
-    this.createCurrent();
-  }
-  Piano.prototype.getKey = function(note) {
-    var keys = new Keys(this);
-    var k = JZZ.MIDI.noteValue(note);
-    if (this.keys[k] !== undefined) keys.keys.push(k);
-    return keys;
-  }
-  Piano.prototype.getKeys = function(from, to) {
-    var keys = new Keys(this);
-    var n0 = from === undefined ? undefined : JZZ.MIDI.noteValue(from);
-    var n1 = to === undefined ? undefined : JZZ.MIDI.noteValue(to);
-    if (n0 !== undefined && n1 !== undefined && n1 < n0) { var nn = n0; n0 = n1; n1 = nn; }
-    for (var k in this.keys) {
-      if (n0 !== undefined && k < n0) continue;
-      if (n1 !== undefined && k > n1) continue;
-      keys.keys.push(k);
-    }
-    return keys;
-  }
-
-  function Keys(piano) {
-    this.piano = piano;
-    this.keys = [];
-  }
-  Keys.prototype.setInnerHTML = function(html) {
-    for (var k in this.keys) this.piano.keys[this.keys[k]].innerHTML = html;
-    return this;
-  }
-  Keys.prototype.setStyle = function(s0, s1) {
-    if (s1 === undefined) s1 = s0;
-    for (var k in this.keys) {
-      var midi = this.keys[k];
-      for (var n in s0) this.piano.stl0[midi][n] = s0[n];
-      for (var n in s1) this.piano.stl1[midi][n] = s1[n];
-      _style(this.piano.keys[midi], this.piano.playing[midi] ? this.piano.stl1[midi] :  this.piano.stl0[midi]);
-      _style(this.piano.keys[midi], this.piano.locs[midi]);
-    }
-    return this;
-  }
-////////////////////////////////////////////////////////////////////////////
   function _Data(d) {
     this.base = .5;
     this.val = .5;
@@ -266,6 +154,16 @@
       this.createAt(this.bottom);
     }
   }
+  _Knob.prototype.onResize = function() {
+    var bin = 0;
+    for (var i = 0; i < this.bins.length; i++) {
+      if (this.bins[i] <= window.innerWidth) bin = this.bins[i];
+      else break;
+    }
+    if (this.current == this.params[bin]) return;
+    this.current = this.params[bin];
+    this.createCurrent();
+  }
   _Knob.prototype.onMouseDown = function(e) {
     if (this.dragX !== undefined) return;
     this.dragX = e.clientX;
@@ -275,10 +173,33 @@
     window.addEventListener('mousemove', this.mouseMove);
     window.addEventListener('mouseup', this.mouseUp);
   }
-  _Knob.prototype.onMouseUp = function(e) {
-//console.log('UP', e);
+  _Knob.prototype.onMouseMove = function(e) {
+    if (this.dragX !== undefined) this.onMove(e.clientX, e.clientY);
   }
-////////////////////////////////////////////////////////////////////////////
+  _Knob.prototype.onMouseUp = function(e) {
+// mouse or touch ended
+  }
+  _Knob.prototype.onTouchStart = function(e) {
+    e.preventDefault();
+    if (this.dragX !== undefined) return;
+    this.touch = e.targetTouches[0].identifier;
+    this.dragX = e.targetTouches[0].clientX;
+    this.dragY = e.targetTouches[0].clientY;
+  }
+  _Knob.prototype.onTouchMove = function(e) {
+    e.preventDefault();
+    if (this.dragX === undefined || this.touch === undefined) return;
+    for (var i in e.targetTouches) if (e.targetTouches[0].identifier == this.touch) {
+      this.onMove(e.targetTouches[i].clientX, e.targetTouches[i].clientY);
+      return;
+    }
+  }
+  _Knob.prototype.onTouchEnd = function(e) {
+    e.preventDefault();
+    this.touch = undefined;
+    this.dragX = undefined;
+    this.onMouseUp(e);
+  }
   function _MouseDown(x) { return function(e) { if (_lftBtnDn(e)) x.onMouseDown(e); }; }
   function _MouseMove(x) { return function(e) { x.onMouseMove(e); }; }
   function _MouseUp(x) { return function(e) {
@@ -288,6 +209,10 @@
     x.dragX = undefined;
     x.onMouseUp(e);
   }; }
+  function _TouchStart(x) { return function(e) { x.onTouchStart(e); }; }
+  function _TouchMove(x) { return function(e) { x.onTouchMove(e); }; }
+  function _TouchEnd(x) { return function(e) { x.onTouchEnd(e); }; }
+  function _IgnoreTouch(e) { e.preventDefault(); }
 ////////////////////////////////////////////////////////////////////////////
   function Slider(arg) {
     _initKnob.call(this, arg, {pos:'N', rw:2, rh:128, kw:24, kh:16});
@@ -326,6 +251,7 @@
     slider.style.MsUserSelect = 'none';
     slider.style.OUserSelect = 'none';
     slider.style.WebkitUserSelect = 'none';
+    slider.addEventListener("touchstart", _IgnoreTouch);
 
     var range = document.createElement('span');
     range.style.display = 'inline-block';
@@ -346,6 +272,9 @@
     knob.style.backgroundColor = '#ddd';
     this.knob = knob;
     knob.addEventListener("mousedown", _MouseDown(this));
+    knob.addEventListener("touchstart", _TouchStart(this));
+    knob.addEventListener("touchmove", _TouchMove(this));
+    knob.addEventListener("touchend", _TouchEnd(this));
 
     if (pos == 'E' || pos == 'W') {
       slider.style.width = bh + 'px';
@@ -395,10 +324,10 @@
     if (this.pos == 'N' || this.pos == 'S') this.knob.style.top = x + 'px';
     else this.knob.style.left = x + 'px';
   }
-  Slider.prototype.onMouseMove = function(e) {
+  Slider.prototype.onMove = function(x, y) {
     var coord;
-    if (this.pos == 'N' || this.pos == 'S') coord = this.coord + e.clientY - this.dragY;
-    else coord = this.coord + e.clientX - this.dragX;
+    if (this.pos == 'N' || this.pos == 'S') coord = this.coord + y - this.dragY;
+    else coord = this.coord + x - this.dragX;
     if (coord < 0) coord = 0;
     if (coord > this.rh) coord = this.rh;
     this.move(coord);
