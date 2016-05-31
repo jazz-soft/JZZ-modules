@@ -13,8 +13,8 @@
   function _lftBtnDn(e) { return e.buttons === undefined ? !e.button : e.buttons & 1; }
   function _lftBtnUp(e) { return e.buttons === undefined ? !e.button : !(e.buttons & 1); }
   function _returnFalse() { return false; }
-  function _style(key, stl) {
-    for(var k in stl) key.style[k] = stl[k];
+  function _style(sp, stl) {
+    for(var k in stl) sp.style[k] = stl[k];
   }
   var _channelMap = { a:10, b:11, c:12, d:13, e:14, f:15, A:10, B:11, C:12, D:13, E:14, F:15 };
   for (var k = 0; k < 16; k++) _channelMap[k] = k;
@@ -104,6 +104,27 @@
     }
   }
 ////////////////////////////////////////////////////////////////////////////
+  function _Span(ctrl, span, inner, stl, stl0, stl1) {
+    this.ctrl = ctrl;
+    this.span = span;
+    this.inner = inner;
+    this.stl = stl;
+    this.stl0 = stl0;
+    this.stl1 = stl1;
+  }
+  _Span.prototype.setInnerHTML = function(html) {
+    if (this.inner) this.inner.innerHTML = html;
+    return this;
+  }
+  _Span.prototype.setStyle = function(s0, s1) {
+    if (s1 === undefined) s1 = s0;
+    for(var k in s0) this.stl0[k] = s0[k];
+    for(var k in s1) this.stl1[k] = s1[k];
+    _style(this.span, this.ctrl.isSelected() ? this.stl1 : this.stl0);
+    _style(this.span, this.stl);
+    return this;
+  }
+////////////////////////////////////////////////////////////////////////////
   function _Knob() {}
   function _initKnob(arg, common) {
     this.bins = [];
@@ -164,6 +185,10 @@
     this.current = this.params[bin];
     this.createCurrent();
   }
+  _Knob.prototype.isSelected = function() { return this.dragX !== undefined; }
+  _Knob.prototype.restyle = function() {
+    for (var i in this.spans) this.spans[i].setStyle();
+  }
   _Knob.prototype.onMouseDown = function(e) {
     if (this.dragX !== undefined) return;
     this.dragX = e.clientX;
@@ -172,6 +197,7 @@
     this.mouseUp = _MouseUp(this);
     window.addEventListener('mousemove', this.mouseMove);
     window.addEventListener('mouseup', this.mouseUp);
+    this.restyle();
   }
   _Knob.prototype.onMouseMove = function(e) {
     if (this.dragX !== undefined) this.onMove(e.clientX, e.clientY);
@@ -185,6 +211,7 @@
     this.touch = e.targetTouches[0].identifier;
     this.dragX = e.targetTouches[0].clientX;
     this.dragY = e.targetTouches[0].clientY;
+    this.restyle();
   }
   _Knob.prototype.onTouchMove = function(e) {
     e.preventDefault();
@@ -198,6 +225,7 @@
     e.preventDefault();
     this.touch = undefined;
     this.dragX = undefined;
+    this.restyle();
     this.onMouseUp(e);
   }
   function _MouseDown(x) { return function(e) { if (_lftBtnDn(e)) x.onMouseDown(e); }; }
@@ -207,6 +235,7 @@
     window.removeEventListener("mousemove", x.mouseMove);
     window.removeEventListener("mouseup", x.mouseUp);
     x.dragX = undefined;
+    x.restyle();
     x.onMouseUp(e);
   }; }
   function _TouchStart(x) { return function(e) { x.onTouchStart(e); }; }
@@ -222,7 +251,7 @@
     parent.innerHTML = '';
     var bh = parseInt(this.current.bh);
     var bw = parseInt(this.current.bw);
-    var rh = parseInt(this.current.rh); if (!rh) rh = 127;
+    var rh = parseInt(this.current.rh); if (!rh) rh = 128;
     this.rh = rh;
     var rw = parseInt(this.current.rw); if (!rw) rw = 2;
     var kh = parseInt(this.current.kh); if (!kh) kh = 24;
@@ -239,80 +268,81 @@
 
     if (!bh) bh = kh + rh;
     if (!bw) bw = kw > rw ? kw : rw;
-    var slider = document.createElement('span');
-    slider.style.display = 'inline-block';
-    slider.style.position = 'relative';
-    slider.style.margin = '0px';
-    slider.style.padding = '0px';
-    slider.style.borderStyle = 'none';
-    slider.style.userSelect = 'none';
-    slider.style.KhtmlUserSelect = 'none';
-    slider.style.MozUserSelect = 'none';
-    slider.style.MsUserSelect = 'none';
-    slider.style.OUserSelect = 'none';
-    slider.style.WebkitUserSelect = 'none';
-    slider.addEventListener("touchstart", _IgnoreTouch);
+    this.stlB = { display:'inline-block', position:'relative', margin:'0', padding:'0', userSelect:'none', KhtmlUserSelect:'none', MozUserSelect:'none', MsUserSelect:'none', OUserSelect:'none', WebkitUserSelect:'none' };
+    this.stlB0 = { borderStyle:'none' };
+    this.stlB1 = { borderStyle:'none' };
+    this.stlR = { display:'inline-block', position:'absolute', margin:'0', padding:'0', borderStyle:'solid', borderWidth:'1px' };
+    this.stlR0 = { backgroundColor:'#aaa' };
+    this.stlR1 = { backgroundColor:'#bbb' };
+    this.stlK = { display:'inline-block', position:'absolute', margin:'0', padding:'0', borderStyle:'solid', borderWidth:'1px' };
+    this.stlK0 = { backgroundColor:'#ddd' };
+    this.stlK1 = { backgroundColor:'#eee' };
 
+    if (pos == 'E' || pos == 'W') {
+      this.stlB.width = bh + 'px';
+      this.stlB.height = bw + 'px';
+      this.stlR.width = rh + 'px';
+      this.stlR.height = rw + 'px';
+      this.stlR.left = ((bh - rh) / 2 - 1) + 'px';
+      this.stlR.top = ((bw - rw) / 2 - 1) + 'px';
+      this.stlK.width = kh + 'px';
+      this.stlK.height = kw + 'px';
+      this.stlK.top = this.dx + 'px';
+    }
+    else {
+      this.stlB.width = bw + 'px';
+      this.stlB.height = bh + 'px';
+      this.stlR.width = rw + 'px';
+      this.stlR.height = rh + 'px';
+      this.stlR.top = ((bh - rh) / 2 - 1) + 'px';
+      this.stlR.left = ((bw - rw) / 2 - 1) + 'px';
+      this.stlK.width = kw + 'px';
+      this.stlK.height = kh + 'px';
+      this.stlK.left = this.dx + 'px';
+    }
+
+    var box = document.createElement('span');
+    this.box = box;
+    this.boxSpan = new _Span(this, box, 0, this.stlB, this.stlB0, this.stlB1);
     var range = document.createElement('span');
-    range.style.display = 'inline-block';
-    range.style.position = 'absolute';
-    range.style.margin = '0px';
-    range.style.padding = '0px';
-    range.style.borderStyle = 'solid';
-    range.style.borderWidth = '1px';
-    range.style.backgroundColor = '#aaa';
-
+    this.range = range;
+    this.rangeSpan = new _Span(this, range, 0, this.stlR, this.stlR0, this.stlR1);
     var knob = document.createElement('span');
-    knob.style.display = 'inline-block';
-    knob.style.position = 'absolute';
-    knob.style.margin = '0px';
-    knob.style.padding = '0px';
-    knob.style.borderStyle = 'solid';
-    knob.style.borderWidth = '1px';
-    knob.style.backgroundColor = '#ddd';
     this.knob = knob;
+    this.knobSpan = new _Span(this, knob, knob, this.stlK, this.stlK0, this.stlK1);
+    this.spans = [this.boxSpan, this.rangeSpan, this.knobSpan];
+
+    box.addEventListener("touchstart", _IgnoreTouch);
     knob.addEventListener("mousedown", _MouseDown(this));
     knob.addEventListener("touchstart", _TouchStart(this));
     knob.addEventListener("touchmove", _TouchMove(this));
     knob.addEventListener("touchend", _TouchEnd(this));
 
-    if (pos == 'E' || pos == 'W') {
-      slider.style.width = bh + 'px';
-      slider.style.height = bw + 'px';
-      range.style.width = rh + 'px';
-      range.style.height = rw + 'px';
-      range.style.left = ((bh - rh) / 2 - 1) + 'px';
-      range.style.top = ((bw - rw) / 2 - 1) + 'px';
-      knob.style.width = kh + 'px';
-      knob.style.height = kw + 'px';
-      knob.style.top = this.dx + 'px';
-    }
-    else {
-      slider.style.width = bw + 'px';
-      slider.style.height = bh + 'px';
-      range.style.width = rw + 'px';
-      range.style.height = rh + 'px';
-      range.style.top = ((bh - rh) / 2 - 1) + 'px';
-      range.style.left = ((bw - rw) / 2 - 1) + 'px';
-      knob.style.width = kw + 'px';
-      knob.style.height = kh + 'px';
-      knob.style.left = this.dx + 'px';
-    }
     this.setValue(this.value);
     if (this.current.onCreate) this.current.onCreate.apply(this);
     range.appendChild(knob);
-    slider.appendChild(range);
-    slider.ondragstart = _returnFalse;
-    slider.onselectstart = _returnFalse;
-    range.ondragstart = _returnFalse;
-    range.onselectstart = _returnFalse;
-    knob.ondragstart = _returnFalse;
-    knob.onselectstart = _returnFalse;
-    parent.appendChild(slider);
+    box.appendChild(range);
+    box.ondragstart = _returnFalse;
+    box.onselectstart = _returnFalse;
+    parent.appendChild(box);
+    if (!this.parent && this.bins.length > 1) {
+      var self = this;
+      this.resize = function() { self.onResize(); }
+      window.addEventListener('resize', this.resize);
+    }
     this.current.parent = parent;
     this.parent = parent;
     this.setValue();
+    _style(this.box, this.dragX === undefined ? this.stlB0 : this.stlB1);
+    _style(this.box, this.stlB);
+    _style(this.range, this.dragX === undefined ? this.stlR0 : this.stlR1);
+    _style(this.range, this.stlR);
+    _style(this.knob, this.dragX === undefined ? this.stlK0 : this.stlK1);
+    _style(this.knob, this.stlK);
   }
+  Slider.prototype.getBox = function() { return this.boxSpan; }
+  Slider.prototype.getRange = function() { return this.rangeSpan; }
+  Slider.prototype.getKnob = function() { return this.knobSpan; }
   Slider.prototype.setValue = function(x) {
     if (x === undefined) x = this.data.val;
     else if (!this.data.setValue(x)) return;
@@ -321,8 +351,14 @@
     x *= this.rh;
     this.coord = x;
     x += this.dy;
-    if (this.pos == 'N' || this.pos == 'S') this.knob.style.top = x + 'px';
-    else this.knob.style.left = x + 'px';
+    if (this.pos == 'N' || this.pos == 'S') {
+      this.stlK.top = x + 'px';
+      this.knob.style.top = x + 'px';
+    }
+    else {
+      this.stlK.left = x + 'px';
+      this.knob.style.left = x + 'px';
+    }
   }
   Slider.prototype.onMove = function(x, y) {
     var coord;
@@ -336,10 +372,12 @@
     if (this.coord == coord) return;
     if (this.pos == 'N' || this.pos == 'S') {
       this.knob.style.top = coord + this.dy + 'px';
+      this.stlK.top = this.knob.style.top;
       this.dragY += coord - this.coord;
     }
     else {
       this.knob.style.left = coord + this.dy + 'px';
+      this.stlK.left = this.knob.style.left;
       this.dragX += coord - this.coord;
     }
     var x = coord / this.rh;
@@ -369,8 +407,9 @@
     port._info = this._info(name);
     port._receive = function(msg) { slider.forward(msg); };
     port._close = function(){ slider._close(); }
-    //port.getKey = function(note) { return piano.getKey(note); }
-    //port.getKeys = function(a, b) { return piano.getKeys(a, b); }
+    port.getBox = function() { return slider.boxSpan; }
+    port.getRange = function() { return slider.rangeSpan; }
+    port.getKnob = function() { return slider.knobSpan; }
     port.setValue = function(x) { slider.setValue(x);}
     port._resume();
   }

@@ -16,65 +16,161 @@
  overflow:auto;
  display:block;
 }
+.key {position:absolute; bottom:0; left:0; width:100%; text-align:left;}
+#piano {
+ display:inline-block;
+ position:relative;
+ margin:0;
+ padding:0;
+ width:151px;
+ height:440px;
+}
+#keybd {
+ display:inline-block;
+ position:absolute;
+ margin:0;
+ padding:0;
+ width:151px;
+ height:295px;
+ bottom:0;
+}
+#knob1 {
+ display:inline-block;
+ position:absolute;
+ margin:0;
+ padding:0;
+ width:0;
+ height:0;
+ left:0;
+ top:0;
+}
+#knob2 {
+ display:inline-block;
+ position:absolute;
+ margin:0;
+ padding:0;
+ width:0;
+ height:0;
+ left:29px;
+ top:8px;
+}
+#knob3 {
+ display:inline-block;
+ position:absolute;
+ margin:0;
+ padding:0;
+ width:0;
+ height:0;
+ left:29px;
+ top:56px;
+}
+#knob4 {
+ display:inline-block;
+ position:absolute;
+ margin:0;
+ padding:0;
+ width:0;
+ height:0;
+ left:29px;
+ top:104px;
+}
+@media (min-width: 500px) {
+ .key{text-align:center;}
+ #piano {
+  width:440px;
+  height:151px;
+ }
+ #keybd {
+  width:295px;
+  height:151px;
+  right:0;
+ }
+ #knob1 {
+  left:0;
+  top:125px;
+ }
+ #knob2 {
+  left:8px;
+  top:0;
+ }
+ #knob3 {
+  left:56px;
+  top:0;
+ }
+ #knob4 {
+  left:104px;
+  top:0;
+ }
+}
 </style>
 <script src="../javascript/JZZ.js"></script>
 <script src="../javascript/JZZ.synth.OSC.js"></script>
-<script src="../javascript/JZZ.input.ASCII.js"></script>
 <script src="../javascript/JZZ.input.Kbd.js"></script>
+<script src="../javascript/JZZ.input.ASCII.js"></script>
 <script src="../javascript/JZZ.input.Knobs.js"></script>
 </head>
 
 <body>
 <h1>JZZ.input.Knobs</h1>
 
-<div id=resp class=center></div>
-
-<div>
+<span id=piano>
+<span id=keybd></span>
 <span id=knob1></span>
 <span id=knob2></span>
-<span id=knob4></span>
 <span id=knob3></span>
-<span id=piano></span>
-</div>
+<span id=knob4></span>
+</span>
 <div id=msg></div>
 
 <script><!--
-JZZ.synth.OSC.register('Web Audio');
-var output = JZZ().openMidiOut();
-
-function onMsg(msg) {
-  print_msg(this.name(), msg);
-}
-
-var piano = JZZ.input.Kbd('Piano', {parent:'piano'}).or(function(){ alert('Cannot open MIDI In!\n' + this.err()); });
-piano.connect(output).connect(onMsg);
-
-JZZ.input.ASCII({
-  A:'F#4', Z:'G4', S:'G#4', X:'A4', D:'Bb4', C:'B4', V:'C5', G:'C#5', B:'D5',
-  H:'D#5', N:'E5', M:'F5', K:'F#5', '<':'G5', L:'G#5', '>':'A5', ':':'Bb5'
-}).connect(piano);
-
-var knob1 = JZZ.input.Slider('Slider 1', {parent:'knob1'}).or(function(){ alert('Cannot open MIDI In!\n' + this.err()); });
-knob1.connect(output).connect(onMsg);
-
-var knob2 = JZZ.input.Slider('Slider 2', {parent:'knob2', data:'mod'}).or(function(){ alert('Cannot open MIDI In!\n' + this.err()); });
-knob2.connect(output).connect(onMsg);
-
-var knob3 = JZZ.input.Slider('Slider 3', {parent:'knob3', data:[4, 36]}).or(function(){ alert('Cannot open MIDI In!\n' + this.err()); });
-knob3.connect(output).connect(onMsg);
-
-var knob4 = JZZ.input.Slider('Slider 4', {parent:'knob4', data:'foot'}).or(function(){ alert('Cannot open MIDI In!\n' + this.err()); });
-knob4.connect(knob3);
-
 var msgarea=document.getElementById('msg');
 var out = [];
-function print_msg(name, msg, dir) {
-  out.push(name + (dir ? " &lt;&lt; " : " &gt;&gt; ") + JZZ.MIDI(msg));
+function print(msg) {
+  out.push(JZZ.MIDI(msg).toString());
   if (out.length > 20) out = out.slice(1);
   msgarea.innerHTML = out.join('<br>');
   msgarea.scrollTop=msgarea.scrollHeight;
 }
+
+JZZ.synth.OSC.register('Web Audio');
+var piano = JZZ.input.Kbd({parent:'keybd', from:'C5', to:'B5', pos:'E', 500:{pos:'N'}, onCreate:function(){
+  this.getBlackKeys().setStyle({color:'#fff'});
+  this.getKey('C5').setInnerHTML('<span class=key>Z</span>');
+  this.getKey('C#5').setInnerHTML('<span class=key>S</span>');
+  this.getKey('D5').setInnerHTML('<span class=key>X</span>');
+  this.getKey('D#5').setInnerHTML('<span class=key>D</span>');
+  this.getKey('E5').setInnerHTML('<span class=key>C</span>');
+  this.getKey('F5').setInnerHTML('<span class=key>V</span>');
+  this.getKey('F#5').setInnerHTML('<span class=key>G</span>');
+  this.getKey('G5').setInnerHTML('<span class=key>B</span>');
+  this.getKey('G#5').setInnerHTML('<span class=key>H</span>');
+  this.getKey('A5').setInnerHTML('<span class=key>N</span>');
+  this.getKey('A#5').setInnerHTML('<span class=key>J</span>');
+  this.getKey('B5').setInnerHTML('<span class=key>M</span>');
+}}).connect(JZZ().openMidiOut()).connect(print);
+JZZ.input.ASCII({Z:'C5', S:'C#5', X:'D5', D:'D#5', C:'E5', V:'F5', G:'F#5', B:'G5', H:'Ab5', N:'A5', J:'Bb5', M:'B5'}).connect(piano);
+
+var knob1 = JZZ.input.Slider({parent:'knob1', bw:26, kh:12, pos:'S', 500:{pos:'E'}, onCreate:function(){
+  this.getKnob().setStyle({borderRadius:'8px', borderColor:'#080'});
+  this.getRange().setStyle({borderColor:'#0c0'});
+}}).connect(JZZ().openMidiOut()).connect(print);
+
+var knob2 = JZZ.input.Slider({parent:'knob2', data:'mod', bw:26, bh:122, kh:12, rh:108, pos:'E', 500:{pos:'N'}, onCreate:function(){
+  this.getKnob().setStyle({backgroundColor:'#f88'}, {backgroundColor:'#faa'});
+}}).connect(JZZ().openMidiOut()).connect(print);
+
+var knob3 = JZZ.input.Slider({parent:'knob3', data:'breath', bw:26, bh:122, kh:12, rh:108, pos:'E', 500:{pos:'N'}, onCreate:function(){
+  this.getKnob().setStyle({backgroundColor:'#d8d'}, {backgroundColor:'#dbd'});
+}}).connect(JZZ().openMidiOut()).connect(print);
+
+var knob4 = JZZ.input.Slider({parent:'knob4', data:'foot', bw:26, bh:122, kh:12, rh:108, pos:'E', 500:{pos:'N'}, onCreate:function(){
+  this.getKnob().setStyle({backgroundColor:'#88f'}, {backgroundColor:'#aaf'});
+}}).connect(JZZ().openMidiOut()).connect(print);
 --></script>
+
+<p>
+<a href=../index.html>Back</a>
+</p>
 
 </body>
 </html>
