@@ -146,7 +146,7 @@ ASCII keyboard as MIDI input.
 [![mocos](http://jazz-soft.github.io/img/macos.jpg)](https://jazz-soft.github.io/modules/ascii)
 [![linux](http://jazz-soft.github.io/img/linux.jpg)](https://jazz-soft.github.io/modules/ascii)
 
-Can be connected to JZZ.input.Kbd to enable both keyboard and mouse/touch input.
+Can be connected to **JZZ.input.Kbd** to enable both keyboard and mouse/touch input.
 
 ##### Example
 
@@ -163,6 +163,34 @@ Can be connected to JZZ.input.Kbd to enable both keyboard and mouse/touch input.
     --></script>
 
 See the [**demo**](https://jazz-soft.github.io/modules/ascii).
+
+## JZZ.input.Knobs
+
+Pitch-bend, modulation, and other knobs for your virtual instrument.
+
+[![windows](http://jazz-soft.github.io/img/windows.jpg)](https://jazz-soft.github.io/modules/knobs)
+[![mocos](http://jazz-soft.github.io/img/macos.jpg)](https://jazz-soft.github.io/modules/knobs)
+[![linux](http://jazz-soft.github.io/img/linux.jpg)](https://jazz-soft.github.io/modules/knobs)
+[![ios](http://jazz-soft.github.io/img/ios.jpg)](https://jazz-soft.github.io/modules/knobs)
+[![android](http://jazz-soft.github.io/img/android.jpg)](https://jazz-soft.github.io/modules/knobs)
+
+Mouse and multitouch.
+Custom styles.
+Responsive design friendly.
+Perfect to use together with **JZZ.input.Kbd**...
+
+[![knobs](http://jazz-soft.github.io/img/knobs.png)](https://jazz-soft.github.io/modules/knobs)
+
+##### Example
+
+    <script src='javascript/JZZ.js'></script>
+    <script src='javascript/JZZ.input.Knobs'></script>
+    ...
+    <script><!--
+    JZZ.input.Slider({data:'pitch'}).connect(JZZ().openMidiOut());
+    --></script>
+
+See the [**demo**](https://jazz-soft.github.io/modules/knobs).
 
 
 ### More modules are coming soon...
