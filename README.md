@@ -146,7 +146,7 @@ ASCII keyboard as MIDI input.
 [![mocos](http://jazz-soft.github.io/img/macos.jpg)](https://jazz-soft.github.io/modules/ascii)
 [![linux](http://jazz-soft.github.io/img/linux.jpg)](https://jazz-soft.github.io/modules/ascii)
 
-Can be connected to **JZZ.input.Kbd** to enable both keyboard and mouse/touch input.
+Can be connected to [**JZZ.input.Kbd**](#jzzinputkbd) to enable both keyboard and mouse/touch input.
 
 ##### Example
 
@@ -177,7 +177,7 @@ Pitch-bend, modulation, and other knobs for your virtual instrument.
 Mouse and multitouch.
 Custom styles.
 Responsive design friendly.
-Perfect to use together with **JZZ.input.Kbd**...
+Perfect to use together with [**JZZ.input.Kbd**](#jzzinputkbd)...
 
 [![knobs](http://jazz-soft.github.io/img/knobs.png)](https://jazz-soft.github.io/modules/knobs)
 
