@@ -1,6 +1,14 @@
 # JZZ-modules
 
-Additional modules for [**JZZ.js**](https://github.com/jazz-soft/JZZ)
+Additional modules for [**JZZ.js**](https://github.com/jazz-soft/JZZ):
+
+[**JZZ.synth.MIDIjs**](#jzzsynthmidijs)  
+[**JZZ.synth.Timbre**](#jzzsynthtimbre)  
+[**JZZ.synth.OSC**](#jzzsynthosc)  
+[**JZZ.input.Qwerty**](#jzzinputqwerty)  
+[**JZZ.input.Kbd**](#jzzinputkbd)  
+[**JZZ.input.ASCII**](#jzzinputascii)  
+[**JZZ.input.Knobs**](#jzzinputknobs)  
 
 ## JZZ.synth.MIDIjs
 
