@@ -2,7 +2,7 @@
   if (!JZZ) return;
   if (!JZZ.input) JZZ.input = {};
 
-  var _version = '0.5';
+  var _version = '0.6';
   function _name(name) { return name ? name : 'ASCII'; }
 
   var _keycode = {
@@ -19,8 +19,8 @@
     this.notes = {};
     this.playing = [];
     if (arg === undefined) arg = {};
-    this.channel = _channelMap[arg.channel];
-    if (this.channel === undefined) this.channel = 0;
+    this.chan = _channelMap[arg.chan];
+    if (this.chan === undefined) this.chan = 0;
     for (var k in arg) {
       var key = _keycode[k];
       var val = JZZ.MIDI.noteValue(arg[k]);
@@ -64,8 +64,8 @@
 
   Engine.prototype._openIn = function(port, name) {
     var keyboard = new Keyboard(this._arg);
-    keyboard.noteOn = function(note) { port._emit(JZZ.MIDI(0x90 + this.channel, note, 127)); };
-    keyboard.noteOff = function(note) { port._emit(JZZ.MIDI(0x80 + this.channel, note, 127)); };
+    keyboard.noteOn = function(note) { port._emit(JZZ.MIDI(0x90 + this.chan, note, 127)); };
+    keyboard.noteOff = function(note) { port._emit(JZZ.MIDI(0x80 + this.chan, note, 127)); };
     port._info = this._info(name);
     port._close = function() { keyboard._close(); }
     port._resume();

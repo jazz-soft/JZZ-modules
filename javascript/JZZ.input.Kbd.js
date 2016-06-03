@@ -2,7 +2,7 @@
   if (!JZZ) return;
   if (!JZZ.input) JZZ.input = {};
 
-  var _version = '0.6';
+  var _version = '0.7';
   function _name(name) { return name ? name : 'Kbd'; }
 
   function _copy(obj) {
@@ -98,13 +98,13 @@
     this.params = {0:{}};
     var common = {from:'C4', to:'E6', ww:42, bw:24, wl:150, bl:100, pos:'N'};
     if (arg === undefined) arg = {};
-    this.channel = _channelMap[arg.channel];
-    if (this.channel === undefined) this.channel = 0;
+    this.chan = _channelMap[arg.chan];
+    if (this.chan === undefined) this.chan = 0;
     var key;
     for (key in arg) {
       if (key == parseInt(key)) this.params[key] = _copy(arg[key]);
       else {
-        if (key == 'channel') continue;
+        if (key == 'chan') continue;
         if ((key == 'from' || key == 'to') && _keyNum(arg[key]) === undefined) continue;
         common[key] = arg[key];
       }
@@ -141,7 +141,7 @@
   }
   Piano.prototype.forward = function(msg) {
     var midi = msg[1];
-    if (msg.getChannel() == this.channel) {
+    if (msg.getChannel() == this.chan) {
       if (msg.isNoteOn()) {
         this.playing[midi] = 'E';
         _style(this.keys[midi], this.stl1[midi]);
@@ -415,8 +415,8 @@
   Engine.prototype._openIn = function(port, name) {
     var piano = new Piano(this._arg);
     piano.create();
-    piano.noteOn = function(note) { JZZ.util.iosSound(); port._emit(JZZ.MIDI(0x90, note, 127)); };
-    piano.noteOff = function(note) { port._emit(JZZ.MIDI(0x80, note, 127)); };
+    piano.noteOn = function(note) { JZZ.util.iosSound(); port._emit(JZZ.MIDI(0x90 + this.chan, note, 127)); };
+    piano.noteOff = function(note) { port._emit(JZZ.MIDI(0x80 + this.chan, note, 127)); };
     piano.emit = function(msg) { port._emit(msg); };
     port._info = this._info(name);
     port._receive = function(msg) { piano.forward(msg); };

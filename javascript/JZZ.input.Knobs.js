@@ -2,7 +2,7 @@
   if (!JZZ) return;
   if (!JZZ.input) JZZ.input = {};
 
-  var _version = '0.1';
+  var _version = '0.2';
   function _name(name, deflt) { return name ? name : deflt; }
 
   function _copy(obj) {
@@ -131,13 +131,13 @@
     this.params = {0:{}};
     if (arg === undefined) arg = {};
     if (common === undefined) common = {};
-    this.channel = _channelMap[arg.channel];
-    if (this.channel === undefined) this.channel = 0;
+    this.chan = _channelMap[arg.chan];
+    if (this.chan === undefined) this.chan = 0;
     var key;
     for (key in arg) {
       if (key == parseInt(key)) this.params[key] = _copy(arg[key]);
       else {
-        if (key == 'channel') continue;
+        if (key == 'chan') continue;
         common[key] = arg[key];
       }
     }
@@ -260,6 +260,7 @@
     this.pos = pos;
     if (!this.data) {
       this.data = new _Data(this.current.data);
+      this.data.chan = this.chan;
       this.data.setBase(this.current.base);
       this.data.setValue(this.current.val);
     }
@@ -312,12 +313,14 @@
     this.knobSpan = new _Span(this, knob, knob, this.stlK, this.stlK0, this.stlK1);
     this.spans = [this.boxSpan, this.rangeSpan, this.knobSpan];
 
-    box.addEventListener("touchstart", _IgnoreTouch);
-    knob.addEventListener("mousedown", _MouseDown(this));
-    knob.addEventListener("touchstart", _TouchStart(this));
-    knob.addEventListener("touchmove", _TouchMove(this));
-    knob.addEventListener("touchend", _TouchEnd(this));
-
+    var active = this.current.active === undefined || this.current.active;
+    if (active) {
+      box.addEventListener("touchstart", _IgnoreTouch);
+      knob.addEventListener("mousedown", _MouseDown(this));
+      knob.addEventListener("touchstart", _TouchStart(this));
+      knob.addEventListener("touchmove", _TouchMove(this));
+      knob.addEventListener("touchend", _TouchEnd(this));
+    }
     this.setValue(this.value);
     if (this.current.onCreate) this.current.onCreate.apply(this);
     range.appendChild(knob);
