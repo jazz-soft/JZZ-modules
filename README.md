@@ -196,6 +196,7 @@ Perfect to use together with [**JZZ.input.Kbd**](#jzzinputkbd)...
     ...
     <script><!--
     JZZ.input.Slider({data:'pitch'}).connect(JZZ().openMidiOut());
+    JZZ.input.Pad({dataX:'mod', dataY:'foot'}).connect(JZZ().openMidiOut());
     --></script>
 
 See the [**demo**](https://jazz-soft.github.io/modules/knobs).
