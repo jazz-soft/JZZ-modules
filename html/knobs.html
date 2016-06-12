@@ -20,86 +20,114 @@
 #piano {
  display:inline-block;
  position:relative;
- margin:0;
+ margin-left:auto;
  padding:0;
- width:151px;
- height:440px;
+ width:143px;
+ height:560px;
 }
 #keybd {
  display:inline-block;
  position:absolute;
  margin:0;
  padding:0;
- width:151px;
+ width:143px;
  height:295px;
  bottom:0;
 }
-#knob1 {
+#pad1 {
  display:inline-block;
  position:absolute;
  margin:0;
  padding:0;
  width:0;
  height:0;
+ top:29px;
+ left:29px;
+}
+#sld0 {
+ display:inline-block;
+ position:absolute;
+ margin:0;
+ padding:0;
+ width:0;
+ height:0;
+ top:29px;
  left:0;
+}
+#sld1 {
+ display:inline-block;
+ position:absolute;
+ margin:0;
+ padding:0;
+ width:0;
+ height:0;
  top:0;
+ left:29px;
 }
-#knob2 {
+#sld2 {
  display:inline-block;
  position:absolute;
  margin:0;
  padding:0;
  width:0;
  height:0;
+ top:178px;
  left:29px;
- top:8px;
 }
-#knob3 {
+#sld3 {
  display:inline-block;
  position:absolute;
  margin:0;
  padding:0;
  width:0;
  height:0;
+ top:207px;
  left:29px;
- top:56px;
 }
-#knob4 {
+#sld4 {
  display:inline-block;
  position:absolute;
  margin:0;
  padding:0;
  width:0;
  height:0;
+ top:236px;
  left:29px;
- top:104px;
 }
-@media (min-width: 500px) {
+@media (min-width: 600px) {
  .key{text-align:center;}
  #piano {
-  width:440px;
-  height:151px;
+  width:560px;
+  height:143px;
  }
  #keybd {
   width:295px;
-  height:151px;
+  height:143px;
   right:0;
  }
- #knob1 {
+ #pad1 {
+  top:0;
+  left:29px;
+ }
+ #sld0 {
+  top:117px;
+  left:29px;
+ }
+ #sld1 {
+  top:0;
   left:0;
-  top:125px;
  }
- #knob2 {
-  left:8px;
+ #sld2 {
   top:0;
+  left:178px;
  }
- #knob3 {
-  left:56px;
+ #sld3 {
   top:0;
+  left:207px;
  }
- #knob4 {
-  left:104px;
+ #sld4 {
   top:0;
+  left:236px;
  }
 }
 </style>
@@ -114,26 +142,30 @@
 <h1>JZZ.input.Knobs</h1>
 
 <span id=piano>
+<span id=pad1></span>
+<span id=sld0></span>
+<span id=sld1></span>
+<span id=sld2></span>
+<span id=sld3></span>
+<span id=sld4></span>
 <span id=keybd></span>
-<span id=knob1></span>
-<span id=knob2></span>
-<span id=knob3></span>
-<span id=knob4></span>
 </span>
 <div id=msg></div>
 
 <script><!--
-var msgarea=document.getElementById('msg');
-var out = [];
+var msgarea = document.getElementById('msg');
+var text = [];
 function print(msg) {
-  out.push(JZZ.MIDI(msg).toString());
-  if (out.length > 20) out = out.slice(1);
-  msgarea.innerHTML = out.join('<br>');
-  msgarea.scrollTop=msgarea.scrollHeight;
+  text.push(JZZ.MIDI(msg).toString());
+  if (text.length > 20) text = text.slice(1);
+  msgarea.innerHTML = text.join('<br>');
+  msgarea.scrollTop = msgarea.scrollHeight;
 }
 
 JZZ.synth.OSC.register('Web Audio');
-var piano = JZZ.input.Kbd({parent:'keybd', from:'C5', to:'B5', pos:'E', 500:{pos:'N'}, onCreate:function(){
+var out = JZZ().openMidiOut();
+
+var piano = JZZ.input.Kbd({parent:'keybd', from:'C5', to:'B5', wl:142, bl:96, pos:'E', 600:{pos:'N'}, onCreate:function(){
   this.getBlackKeys().setStyle({color:'#fff'});
   this.getKey('C5').setInnerHTML('<span class=key>Z</span>');
   this.getKey('C#5').setInnerHTML('<span class=key>S</span>');
@@ -147,25 +179,45 @@ var piano = JZZ.input.Kbd({parent:'keybd', from:'C5', to:'B5', pos:'E', 500:{pos
   this.getKey('A5').setInnerHTML('<span class=key>N</span>');
   this.getKey('A#5').setInnerHTML('<span class=key>J</span>');
   this.getKey('B5').setInnerHTML('<span class=key>M</span>');
-}}).connect(JZZ().openMidiOut()).connect(print);
+}}).connect(out).connect(print);
 JZZ.input.ASCII({Z:'C5', S:'C#5', X:'D5', D:'D#5', C:'E5', V:'F5', G:'F#5', B:'G5', H:'Ab5', N:'A5', J:'Bb5', M:'B5'}).connect(piano);
 
-var knob1 = JZZ.input.Slider({parent:'knob1', bw:26, kh:12, pos:'S', 500:{pos:'E'}, onCreate:function(){
-  this.getKnob().setStyle({borderRadius:'8px', borderColor:'#080'});
-  this.getRange().setStyle({borderColor:'#0c0'});
-}}).connect(JZZ().openMidiOut()).connect(print);
+var pad1 = JZZ.input.Pad({parent:'pad1', rh:96, kw:16, pos:'E', 600:{pos:'N'}, onCreate:function(){
+  this.getBox().setStyle({backgroundColor:'#ddd'});
+  this.getRange().setStyle({color:'#c0c'}).setInnerHTML('pitch bend &<br>modulation');
+  this.getKnob().setStyle({borderRadius:'50%', backgroundColor:'rgba(200,0,200,0.3)'});
+}});
 
-var knob2 = JZZ.input.Slider({parent:'knob2', data:'mod', bw:26, bh:122, kh:12, rh:108, pos:'E', 500:{pos:'N'}, onCreate:function(){
-  this.getKnob().setStyle({backgroundColor:'#f88'}, {backgroundColor:'#faa'});
-}}).connect(JZZ().openMidiOut()).connect(print);
+var sld0 = JZZ.input.Slider({parent:'sld0', pos:'S', 600:{pos:'E'}, onCreate:function(){
+  this.getBox().setStyle({backgroundColor:'#ddd'}).setInnerHTML('pitch bend');
+  this.getRange().setStyle({color:'#00c'});
+  this.getKnob().setStyle({borderRadius:'50%', backgroundColor:'rgba(0,0,255,0.3)'});
+}});
 
-var knob3 = JZZ.input.Slider({parent:'knob3', data:'breath', bw:26, bh:122, kh:12, rh:108, pos:'E', 500:{pos:'N'}, onCreate:function(){
-  this.getKnob().setStyle({backgroundColor:'#d8d'}, {backgroundColor:'#dbd'});
-}}).connect(JZZ().openMidiOut()).connect(print);
+var sld1 = JZZ.input.Slider({parent:'sld1', data:'mod', rh:96, pos:'E', 600:{pos:'N'}, onCreate:function(){
+  this.getBox().setStyle({backgroundColor:'#ddd'});
+  this.getRange().setStyle({color:'#c00'});
+  this.getKnob().setStyle({borderRadius:'50%', backgroundColor:'rgba(255,0,0,0.3)'});
+}});
 
-var knob4 = JZZ.input.Slider({parent:'knob4', data:'foot', bw:26, bh:122, kh:12, rh:108, pos:'E', 500:{pos:'N'}, onCreate:function(){
-  this.getKnob().setStyle({backgroundColor:'#88f'}, {backgroundColor:'#aaf'});
-}}).connect(JZZ().openMidiOut()).connect(print);
+var sld2 = JZZ.input.Slider({parent:'sld2', data:'volume', rh:96, pos:'E', 600:{pos:'N'}, onCreate:function(){
+  this.getBox().setStyle({background: this.settings().pos == 'E' ? 'linear-gradient(to left,#bbf,#fff)' : 'linear-gradient(#bbf,#fff)'});
+}});
+
+var sld3 = JZZ.input.Slider({parent:'sld3', data:'foot', rh:96, pos:'E', 600:{pos:'N'}, onCreate:function(){
+  this.getBox().setStyle({background: this.settings().pos == 'E' ? 'linear-gradient(to left,#fff,#bbf)' : 'linear-gradient(#fff,#bbf)'});
+}});
+
+var sld4 = JZZ.input.Slider({parent:'sld4', data:'foot', active:false, rh:96, pos:'E', 600:{pos:'N'}, onCreate:function(){
+  this.getRange().setStyle({color:'#ddd', backgroundColor:'#fff'});
+}});
+
+pad1.connect(sld0).connect(sld1).connect(piano);
+sld0.connect(pad1);
+sld1.connect(pad1);
+sld2.connect(piano);
+sld3.connect(sld4).connect(piano);
+
 --></script>
 
 </body>

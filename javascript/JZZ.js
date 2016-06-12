@@ -272,8 +272,11 @@
     return this;
   }
   _M.prototype._emit = function(msg) {
-    for (var i in this._handles) this._handles[i].apply(this, [MIDI(msg)]);
-    for (var i in this._outs) this._outs[i].send(MIDI(msg));
+    for (var i in this._handles) this._handles[i].apply(this, [MIDI(msg)._stamp(this)]);
+    for (var i in this._outs) {
+      var m = MIDI(msg);
+      if (!m._stamped(this._outs[i])) this._outs[i].send(m._stamp(this));
+    }
   }
   function _emit(msg) { this._emit(msg); }
   _M.prototype.emit = function(msg) {
@@ -1043,6 +1046,7 @@
 
   function MIDI(arg) {
     var self = this instanceof MIDI ? this : self = new MIDI();
+    self._from = arg instanceof MIDI ? arg._from.slice() : [];
     if (!arguments.length) return self;
     var arr = arg instanceof Array ? arg : arguments;
     for (var i = 0; i < arr.length; i++) {
@@ -1300,6 +1304,21 @@
       127: 'Poly Mode On'}[this[1]];
     if (!ss) ss = 'Undefined';
     return s + ' -- ' + ss;
+  }
+  MIDI.prototype._stamp = function(obj) { this._from.push(obj._orig ? obj._orig : obj); return this; }
+  MIDI.prototype._unstamp = function(obj) {
+    if (obj === undefined) this._from = [];
+    else {
+      if (obj._orig) obj = obj._orig;
+      var i = this._from.indexOf(obj);
+      if (i > -1) this._from.splice(i, 1);
+    }
+    return this;
+  }
+  MIDI.prototype._stamped = function(obj) {
+    if (obj._orig) obj = obj._orig;
+    for (var i = 0; i < this._from.length; i++) if (this._from[i] == obj) return true;
+    return false;
   }
 
   JZZ.MIDI = MIDI;

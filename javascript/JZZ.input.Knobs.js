@@ -2,7 +2,7 @@
   if (!JZZ) return;
   if (!JZZ.input) JZZ.input = {};
 
-  var _version = '0.3';
+  var _version = '0.4';
   function _name(name, deflt) { return name ? name : deflt; }
 
   function _copy(obj) {
@@ -16,6 +16,7 @@
   function _style(sp, stl) {
     for(var k in stl) sp.style[k] = stl[k];
   }
+  var _innerStyle = {margin:0, padding:0, width:'100%', height:'100%'};
   var _channelMap = { a:10, b:11, c:12, d:13, e:14, f:15, A:10, B:11, C:12, D:13, E:14, F:15 };
   for (var k = 0; k < 16; k++) _channelMap[k] = k;
 
@@ -110,7 +111,7 @@
     this.stl1 = stl1;
   }
   _Span.prototype.setInnerHTML = function(html) {
-    if (this.inner) this.inner.innerHTML = html;
+    this.inner.innerHTML = html;
     return this;
   }
   _Span.prototype.setStyle = function(s0, s1) {
@@ -182,6 +183,7 @@
     this.current = this.params[bin];
     this.createCurrent();
   }
+  _Knob.prototype.settings = function() { return _copy(this.current); }
   _Knob.prototype.isSelected = function() { return this.dragX !== undefined; }
   _Knob.prototype.restyle = function() {
     for (var i in this.spans) this.spans[i].setStyle();
@@ -301,10 +303,14 @@
 
     var box = document.createElement('span');
     this.box = box;
-    this.boxSpan = new _Span(this, box, 0, this.stlB, this.stlB0, this.stlB1);
+    var box_ = document.createElement('span');
+    _style(box_, _innerStyle);
+    this.boxSpan = new _Span(this, box, box_, this.stlB, this.stlB0, this.stlB1);
     var range = document.createElement('span');
     this.range = range;
-    this.rangeSpan = new _Span(this, range, 0, this.stlR, this.stlR0, this.stlR1);
+    var range_ = document.createElement('span');
+    _style(range_, _innerStyle);
+    this.rangeSpan = new _Span(this, range, range_, this.stlR, this.stlR0, this.stlR1);
     var knob = document.createElement('span');
     this.knob = knob;
     this.knobSpan = new _Span(this, knob, knob, this.stlK, this.stlK0, this.stlK1);
@@ -319,7 +325,9 @@
       knob.addEventListener("touchend", _TouchEnd(this));
     }
     if (this.current.onCreate) this.current.onCreate.apply(this);
+    range.appendChild(range_);
     range.appendChild(knob);
+    box.appendChild(box_);
     box.appendChild(range);
     box.ondragstart = _returnFalse;
     box.onselectstart = _returnFalse;
@@ -459,10 +467,14 @@
 
     var box = document.createElement('span');
     this.box = box;
-    this.boxSpan = new _Span(this, box, 0, this.stlB, this.stlB0, this.stlB1);
+    var box_ = document.createElement('span');
+    _style(box_, _innerStyle);
+    this.boxSpan = new _Span(this, box, box_, this.stlB, this.stlB0, this.stlB1);
     var range = document.createElement('span');
     this.range = range;
-    this.rangeSpan = new _Span(this, range, 0, this.stlR, this.stlR0, this.stlR1);
+    var range_ = document.createElement('span');
+    _style(range_, _innerStyle);
+    this.rangeSpan = new _Span(this, range, range_, this.stlR, this.stlR0, this.stlR1);
     var knob = document.createElement('span');
     this.knob = knob;
     this.knobSpan = new _Span(this, knob, knob, this.stlK, this.stlK0, this.stlK1);
@@ -477,7 +489,9 @@
       knob.addEventListener("touchend", _TouchEnd(this));
     }
     if (this.current.onCreate) this.current.onCreate.apply(this);
+    range.appendChild(range_);
     range.appendChild(knob);
+    box.appendChild(box_);
     box.appendChild(range);
     box.ondragstart = _returnFalse;
     box.onselectstart = _returnFalse;
@@ -591,6 +605,7 @@
     port._info = this._info(name);
     port._receive = function(msg) { slider.forward(msg); };
     port._close = function(){ slider._close(); }
+    port.settings = function() { return slider.settings(); }
     port.getBox = function() { return slider.boxSpan; }
     port.getRange = function() { return slider.rangeSpan; }
     port.getKnob = function() { return slider.knobSpan; }
@@ -638,6 +653,7 @@
     port._info = this._info(name);
     port._receive = function(msg) { pad.forward(msg); };
     port._close = function(){ pad._close(); }
+    port.settings = function() { return pad.settings(); }
     port.getBox = function() { return pad.boxSpan; }
     port.getRange = function() { return pad.rangeSpan; }
     port.getKnob = function() { return pad.knobSpan; }

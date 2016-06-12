@@ -326,6 +326,7 @@
     this.current.parent = parent;
     this.parent = parent;
   }
+  Piano.prototype.settings = function() { return _copy(this.current); }
   Piano.prototype.onResize = function() {
     var bin = 0;
     for (var i = 0; i < this.bins.length; i++) {
@@ -421,6 +422,7 @@
     port._info = this._info(name);
     port._receive = function(msg) { piano.forward(msg); };
     port._close = function(){ piano._close(); }
+    port.settings = function() { return piano.settings(); }
     port.getKey = function(note) { return piano.getKey(note); }
     port.getKeys = function(a, b) { return piano.getKeys(a, b); }
     port.getWhiteKeys = function(a, b) { return piano.getWhiteKeys(a, b); }
