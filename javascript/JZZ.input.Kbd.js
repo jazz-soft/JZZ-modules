@@ -2,7 +2,7 @@
   if (!JZZ) return;
   if (!JZZ.input) JZZ.input = {};
 
-  var _version = '0.7';
+  var _version = '0.8';
   function _name(name) { return name ? name : 'Kbd'; }
 
   function _copy(obj) {
@@ -126,8 +126,8 @@
   }
   Piano.prototype._close = function() {
     for (var midi in this.playing) if (this.playing[midi] == 'M' || this.playing[midi] == 'T') this.noteOff(midi);
-    if (this.parent) this.parent.innerHTML = '';
-    if (this.mouseUpHandler) window.removeEventListener("mouseup", this.mouseUpHandler);
+    if (this.resize) window.removeEventListener('resize', this.resize);
+    this.cleanup();
   }
   Piano.prototype.press = function(midi) {
     _style(this.keys[midi], this.stl1[midi]);
@@ -156,16 +156,14 @@
     this.emit(msg);
   }
   Piano.prototype.findKey = function(x, y, ret) {
-    var found;
     for (var midi in this.keys) {
-      var r = this.keys[midi].getBoundingClientRect();
-      if (x > r.left && x < r.right && y > r.top && y < r.bottom) {
-        found = midi;
-        var k = midi % 12;
-        if (k == 1 || k == 3 || k == 6 || k == 8 || k == 10) break;
+      for (var elm = document.elementFromPoint(x, y); elm; elm = elm.parentNode) {
+        if (this.keys[midi] == elm) {
+          ret[midi] = true;
+          return;
+        }
       }
     }
-    if (found !== undefined) ret[found] = true;
   }
   Piano.prototype.create = function() {
     var bin = 0;
@@ -177,7 +175,15 @@
     this.createCurrent();
   }
   Piano.prototype.createCurrent = function() {
-    if (this.parent) this.parent.innerHTML = '';
+    this.cleanup();
+    this.keys = {}; this.locs = {};
+    this.stl0 = {}; this.stl1 = {};
+    this.playing = {}; this.touches = {};
+
+    if (this.current.keys) {
+      this.createWithKeys(this.current.keys);
+      return;
+    }
     if (typeof this.current.parent === 'string') this.current.parent = document.getElementById(this.current.parent);
     try { this.createAt(this.current.parent); }
     catch(e) {
@@ -188,11 +194,21 @@
       this.createAt(this.bottom);
     }
   }
+  Piano.prototype.createWithKeys = function(keys) {
+    for (var k in keys) {
+      var midi = JZZ.MIDI.noteValue(keys[k][1]);
+      var dom = keys[k][0];
+      if (typeof dom === 'string') dom = document.getElementById(dom);
+      this.keys[midi] = dom;
+      this.locs[midi] = {};
+      this.stl0[midi] = {};
+      this.stl1[midi] = {};
+    }
+    if (this.current.onCreate) this.current.onCreate.apply(this);
+    this.setListeners();
+  }
   Piano.prototype.createAt = function(parent) {
     parent.innerHTML = '';
-    this.keys = {}; this.locs = {};
-    this.stl0 = {}; this.stl1 = {};
-    this.playing = {}; this.touches = {};
     var pos = this.current.pos.toUpperCase();
     var first = _keyNum(this.current.from);
     var last = _keyNum(this.current.to);
@@ -299,32 +315,58 @@
     }
     if (this.current.onCreate) this.current.onCreate.apply(this);
     parent.appendChild(piano);
+    this.current.parent = parent;
+    this.parent = parent;
+    this.setListeners();
+  }
+  Piano.prototype.setListeners = function() {
     var active = this.current.active === undefined || this.current.active;
-    for (midi in this.keys) {
-      if (active) {
-        this.keys[midi].addEventListener("mousedown", _handleMouseDown(this, midi));
-        this.keys[midi].addEventListener("mouseover", _handleMouseOver(this, midi));
-        this.keys[midi].addEventListener("mouseout", _handleMouseOut(this, midi));
-        this.keys[midi].addEventListener("mouseup", _handleMouseUp(this, midi));
+    if (active) {
+      this.mouseUpHandle = _handleMouseOff(this);
+      window.addEventListener("mouseup", this.mouseUpHandle);
+      this.touchHandle = _handleTouch(this);
+      this.mouseDownH = [];
+      this.mouseOverH = [];
+      this.mouseOutH = [];
+      this.mouseUpH = [];
+      for (var midi in this.keys) {
+        this.mouseDownH[midi] = _handleMouseDown(this, midi);
+        this.mouseOverH[midi] = _handleMouseOver(this, midi);
+        this.mouseOutH[midi] = _handleMouseOut(this, midi);
+        this.mouseUpH[midi] = _handleMouseUp(this, midi);
+        this.keys[midi].addEventListener("mousedown", this.mouseDownH[midi]);
+        this.keys[midi].addEventListener("mouseover", this.mouseOverH[midi]);
+        this.keys[midi].addEventListener("mouseout", this.mouseOutH[midi]);
+        this.keys[midi].addEventListener("mouseup", this.mouseUpH[midi]);
+        this.keys[midi].addEventListener("touchstart", this.touchHandle);
+        this.keys[midi].addEventListener("touchmove", this.touchHandle);
+        this.keys[midi].addEventListener("touchend", this.touchHandle);
       }
+    }
+    for (var midi in this.keys) {
       this.keys[midi].ondragstart = _returnFalse;
       this.keys[midi].onselectstart = _returnFalse;
     }
-    if (active) {
-      this.mouseUpHandler = _handleMouseOff(this);
-      window.addEventListener("mouseup", this.mouseUpHandler);
-      var touchHandle = _handleTouch(this);
-      piano.addEventListener("touchstart", touchHandle);
-      piano.addEventListener("touchmove", touchHandle);
-      piano.addEventListener("touchend", touchHandle);
-    }
-    if (!this.parent && this.bins.length > 1) {
+    if (!this.resize && this.bins.length > 1) {
       var self = this;
       this.resize = function() { self.onResize();}
       window.addEventListener('resize', this.resize);
     }
-    this.current.parent = parent;
-    this.parent = parent;
+  }
+  Piano.prototype.cleanup = function() {
+    if (this.mouseUpHandle) window.removeEventListener("mouseup", this.mouseUpHandle);
+    for (var midi in this.keys) {
+      if (this.mouseDownH[midi]) this.keys[midi].removeEventListener("mousedown", this.mouseDownH[midi]);
+      if (this.mouseOverH[midi]) this.keys[midi].removeEventListener("mouseover", this.mouseOverH[midi]);
+      if (this.mouseOutH[midi]) this.keys[midi].removeEventListener("mouseout", this.mouseOutH[midi]);
+      if (this.mouseUpH[midi]) this.keys[midi].removeEventListener("mouseup", this.mouseUpH[midi]);
+      if (this.touchHandle) {
+        this.keys[midi].removeEventListener("touchstart", this.touchHandle);
+        this.keys[midi].removeEventListener("touchmove", this.touchHandle);
+        this.keys[midi].removeEventListener("touchend", this.touchHandle);
+      }
+    }
+    if (this.parent) this.parent.innerHTML = '';
   }
   Piano.prototype.settings = function() { return _copy(this.current); }
   Piano.prototype.onResize = function() {

@@ -28,6 +28,24 @@ span {display:inline-block;}
 <span id=right class=middle></span>
 </div>
 
+<div class=center>
+<svg width="400" height="200" viewBox="0 0 400 200" stroke="#000" stroke-width="1" fill="#fff">
+<polygon id="c5" points="140 10, 5 170, 63 197, 160 20" />
+<polygon id="d5" points="160 20, 78 170, 137 182, 180 22" />
+<polygon id="e5" points="180 22, 142 165, 194 167, 204 28" />
+<polygon id="f5" points="204 28, 195 151, 248 145, 227 33" />
+<polygon id="g5" points="227 33, 246 136, 303 122, 253 34" />
+<polygon id="a5" points="253 34, 297 111, 346 88, 282 28" />
+<polygon id="b5" points="282 28, 340 83, 390 56, 303 22" />
+<polygon id="db5" points="160 9, 92 109, 123 119, 169 14" />
+<polygon id="eb5" points="175 20, 140 117, 168 120, 187 22" />
+<polygon id="gb5" points="221 28, 222 94, 252 88, 231 29"  />
+<polygon id="ab5" points="242 27, 266 82, 286 71, 255 26" />
+<polygon id="bb5" points="275 28, 301 62, 324 50, 285 24" />
+This browser does not support SVG!
+</svg>
+</div>
+
 <script><!--
 JZZ.synth.OSC.register('Web Audio');
 var output = JZZ().openMidiOut();
@@ -87,6 +105,14 @@ JZZ.input.Kbd({parent:'bottom', pos:'S', wl:126, bl:80, from:'C5', to:'B5'})
        this.getKey('C#5').setStyle({ backgroundPosition:'-243px -46px'});
      })
      .connect(output);
+JZZ.input.Kbd({keys:[
+  ['c5', 'c5'], ['db5', 'db5'], ['d5', 'd5'], ['eb5', 'eb5'], ['e5', 'e5'], ['f5', 'f5'],
+  ['gb5', 'gb5'], ['g5', 'g5'], ['ab5', 'ab5'], ['a5', 'a5'], ['bb5', 'bb5'], ['b5', 'b5']
+], onCreate:function(){
+  this.getWhiteKeys().setStyle({fill:'#fff'}, {fill:'#ccc'});
+  this.getBlackKeys().setStyle({fill:'#000'}, {fill:'#ccc'});
+}}).or(function(){ alert('Cannot open MIDI In!\n' + this.err()); }).connect(output);
+
 --></script>
 
 </body>
