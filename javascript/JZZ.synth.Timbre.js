@@ -3,7 +3,7 @@
   if (!JZZ.synth) JZZ.synth = {};
 
   function _name(name) { return name ? name : 'JZZ.synth.Timbre'; }
-  function _loaded() { return typeof T !== 'undefined' && T.version;}
+  function _loaded() { return typeof T != 'undefined' && T.version;}
 
   var _synth = {};
   var _engine = {};

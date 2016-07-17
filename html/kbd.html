@@ -48,7 +48,7 @@ This browser does not support SVG!
 
 <script><!--
 JZZ.synth.OSC.register('Web Audio');
-var output = JZZ().openMidiOut();
+var output = JZZ().openMidiOut(/^((?!Midi Through).)*$/i);
 JZZ.input.Kbd.register('kbd', {parent:'resp', from:'C5', 0:{to:'B6'}, 740:{to:'E7'}, 900:{to:'B7'} });
 JZZ().openMidiIn('kbd')
      .or(function(){ alert('Cannot open MIDI In!\n' + this.err()); })

@@ -2,7 +2,7 @@
   if (!JZZ) return;
   if (!JZZ.input) JZZ.input = {};
 
-  var _version = '0.4';
+  var _version = '0.5';
   function _name(name, deflt) { return name ? name : deflt; }
 
   function _copy(obj) {
@@ -10,8 +10,16 @@
     for(var k in obj) ret[k] = obj[k];
     return ret;
   }
-  function _lftBtnDn(e) { return e.buttons === undefined ? !e.button : e.buttons & 1; }
-  function _lftBtnUp(e) { return e.buttons === undefined ? !e.button : !(e.buttons & 1); }
+  var _firefoxBug;
+  function _fixBtnUp(e) {
+    if (typeof e.buttons == 'undefined' || e.buttons != _firefoxBug) return e;
+    e.stopPropagation();
+    if (e.button == 0) return {buttons:_firefoxBug^1};
+    if (e.button == 1) return {buttons:_firefoxBug^4};
+    if (e.button == 2) return {buttons:_firefoxBug^2};
+  }
+  function _lftBtnDn(e) { return typeof e.buttons == 'undefined' ? !e.button : e.buttons & 1; }
+  function _lftBtnUp(e) { return typeof e.buttons == 'undefined' ? !e.button : !(e.buttons & 1); }
   function _returnFalse() { return false; }
   function _style(sp, stl) {
     for(var k in stl) sp.style[k] = stl[k];
@@ -115,7 +123,7 @@
     return this;
   }
   _Span.prototype.setStyle = function(s0, s1) {
-    if (s1 === undefined) s1 = s0;
+    if (typeof s1 == 'undefined') s1 = s0;
     for(var k in s0) this.stl0[k] = s0[k];
     for(var k in s1) this.stl1[k] = s1[k];
     _style(this.span, this.ctrl.isSelected() ? this.stl1 : this.stl0);
@@ -127,10 +135,10 @@
   function _initKnob(arg, common) {
     this.bins = [];
     this.params = {0:{}};
-    if (arg === undefined) arg = {};
-    if (common === undefined) common = {};
+    if (typeof arg == 'undefined') arg = {};
+    if (typeof common == 'undefined') common = {};
     this.chan = _channelMap[arg.chan];
-    if (this.chan === undefined) this.chan = 0;
+    if (typeof this.chan == 'undefined') this.chan = 0;
     var key;
     for (key in arg) {
       if (key == parseInt(key)) this.params[key] = _copy(arg[key]);
@@ -142,7 +150,7 @@
     for (key in this.params) {
       this.bins.push(key);
       for (var k in common) {
-        if ((k == 'from' || k == 'to') && _keyNum(this.params[key][k]) === undefined) this.params[key][k] = common[k];
+        if ((k == 'from' || k == 'to') && typeof _keyNum(this.params[key][k]) == 'undefined') this.params[key][k] = common[k];
         if (!(k in this.params[key])) this.params[key][k] = common[k];
       }
     }
@@ -163,7 +171,7 @@
   }
   _Knob.prototype.createCurrent = function() {
     if (this.parent) this.parent.innerHTML = '';
-    if (typeof this.current.parent === 'string') this.current.parent = document.getElementById(this.current.parent);
+    if (typeof this.current.parent == 'string') this.current.parent = document.getElementById(this.current.parent);
     try { this.createAt(this.current.parent); }
     catch(e) {
       if (!this.bottom) {
@@ -184,12 +192,12 @@
     this.createCurrent();
   }
   _Knob.prototype.settings = function() { return _copy(this.current); }
-  _Knob.prototype.isSelected = function() { return this.dragX !== undefined; }
+  _Knob.prototype.isSelected = function() { return typeof this.dragX != 'undefined'; }
   _Knob.prototype.restyle = function() {
     for (var i in this.spans) this.spans[i].setStyle();
   }
   _Knob.prototype.onMouseDown = function(e) {
-    if (this.dragX !== undefined) return;
+    if (typeof this.dragX != 'undefined') return;
     this.dragX = e.clientX;
     this.dragY = e.clientY;
     this.mouseMove = _MouseMove(this);
@@ -199,14 +207,14 @@
     this.restyle();
   }
   _Knob.prototype.onMouseMove = function(e) {
-    if (this.dragX !== undefined) this.onMove(e.clientX, e.clientY);
+    if (typeof this.dragX != 'undefined') this.onMove(e.clientX, e.clientY);
   }
   _Knob.prototype.onMouseUp = function(e) {
 // mouse or touch ended
   }
   _Knob.prototype.onTouchStart = function(e) {
     e.preventDefault();
-    if (this.dragX !== undefined) return;
+    if (typeof this.dragX != 'undefined') return;
     this.touch = e.targetTouches[0].identifier;
     this.dragX = e.targetTouches[0].clientX;
     this.dragY = e.targetTouches[0].clientY;
@@ -214,7 +222,7 @@
   }
   _Knob.prototype.onTouchMove = function(e) {
     e.preventDefault();
-    if (this.dragX === undefined || this.touch === undefined) return;
+    if (typeof this.dragX == 'undefined' || typeof this.touch == 'undefined') return;
     for (var i in e.targetTouches) if (e.targetTouches[0].identifier == this.touch) {
       this.onMove(e.targetTouches[i].clientX, e.targetTouches[i].clientY);
       return;
@@ -227,15 +235,18 @@
     this.restyle();
     this.onMouseUp(e);
   }
-  function _MouseDown(x) { return function(e) { if (_lftBtnDn(e)) x.onMouseDown(e); }; }
-  function _MouseMove(x) { return function(e) { x.onMouseMove(e); }; }
+  function _MouseDown(x) { return function(e) { _firefoxBug = e.buttons; if (_lftBtnDn(e)) x.onMouseDown(e); }; }
+  function _MouseMove(x) { return function(e) { _firefoxBug = e.buttons; x.onMouseMove(e); }; }
   function _MouseUp(x) { return function(e) {
-    if (!_lftBtnUp(e)) return;
-    window.removeEventListener("mousemove", x.mouseMove);
-    window.removeEventListener("mouseup", x.mouseUp);
-    x.dragX = undefined;
-    x.restyle();
-    x.onMouseUp(e);
+    e = _fixBtnUp(e);
+    if (_lftBtnUp(e)) {
+      window.removeEventListener("mousemove", x.mouseMove);
+      window.removeEventListener("mouseup", x.mouseUp);
+      x.dragX = undefined;
+      x.restyle();
+      x.onMouseUp(e);
+    }
+    _firefoxBug = e.buttons;
   }; }
   function _TouchStart(x) { return function(e) { x.onTouchStart(e); }; }
   function _TouchMove(x) { return function(e) { x.onTouchMove(e); }; }
@@ -316,7 +327,7 @@
     this.knobSpan = new _Span(this, knob, knob, this.stlK, this.stlK0, this.stlK1);
     this.spans = [this.boxSpan, this.rangeSpan, this.knobSpan];
 
-    var active = this.current.active === undefined || this.current.active;
+    var active = typeof this.current.active == 'undefined' || this.current.active;
     if (active) {
       box.addEventListener("touchstart", _IgnoreTouch);
       knob.addEventListener("mousedown", _MouseDown(this));
@@ -340,18 +351,18 @@
     this.current.parent = parent;
     this.parent = parent;
     this.setValue();
-    _style(this.box, this.dragX === undefined ? this.stlB0 : this.stlB1);
+    _style(this.box, typeof this.dragX == 'undefined' ? this.stlB0 : this.stlB1);
     _style(this.box, this.stlB);
-    _style(this.range, this.dragX === undefined ? this.stlR0 : this.stlR1);
+    _style(this.range, typeof this.dragX == 'undefined' ? this.stlR0 : this.stlR1);
     _style(this.range, this.stlR);
-    _style(this.knob, this.dragX === undefined ? this.stlK0 : this.stlK1);
+    _style(this.knob, typeof this.dragX == 'undefined' ? this.stlK0 : this.stlK1);
     _style(this.knob, this.stlK);
   }
   Slider.prototype.getBox = function() { return this.boxSpan; }
   Slider.prototype.getRange = function() { return this.rangeSpan; }
   Slider.prototype.getKnob = function() { return this.knobSpan; }
   Slider.prototype.setValue = function(x) {
-    if (x === undefined) x = this.data.val;
+    if (typeof x == 'undefined') x = this.data.val;
     else if (!this.data.setValue(x)) return;
     x = this.data.val;
     if (this.pos == 'N' || this.pos == 'W') x = 1. - x;
@@ -418,8 +429,8 @@
     if (!this.dataX) {
       this.dataX = new _Data(this.current.dataX);
       this.dataY = new _Data(this.current.dataY);
-      if (this.current.dataX === undefined && this.current.dataY !== undefined && !this.dataY.msb) this.dataX = new _Data('mod');
-      if (this.current.dataY === undefined && !this.dataX.msb) this.dataY = new _Data('mod');
+      if (typeof this.current.dataX == 'undefined' && typeof this.current.dataY != 'undefined' && !this.dataY.msb) this.dataX = new _Data('mod');
+      if (typeof this.current.dataY == 'undefined' && !this.dataX.msb) this.dataY = new _Data('mod');
       this.dataX.chan = this.chan;
       this.dataY.chan = this.chan;
       this.dataX.setBase(this.current.baseX);
@@ -480,7 +491,7 @@
     this.knobSpan = new _Span(this, knob, knob, this.stlK, this.stlK0, this.stlK1);
     this.spans = [this.boxSpan, this.rangeSpan, this.knobSpan];
 
-    var active = this.current.active === undefined || this.current.active;
+    var active = typeof this.current.active == 'undefined' || this.current.active;
     if (active) {
       box.addEventListener("touchstart", _IgnoreTouch);
       knob.addEventListener("mousedown", _MouseDown(this));
@@ -504,18 +515,18 @@
     this.current.parent = parent;
     this.parent = parent;
     this.setValue();
-    _style(this.box, this.dragX === undefined ? this.stlB0 : this.stlB1);
+    _style(this.box, typeof this.dragX == 'undefined' ? this.stlB0 : this.stlB1);
     _style(this.box, this.stlB);
-    _style(this.range, this.dragX === undefined ? this.stlR0 : this.stlR1);
+    _style(this.range, typeof this.dragX == 'undefined' ? this.stlR0 : this.stlR1);
     _style(this.range, this.stlR);
-    _style(this.knob, this.dragX === undefined ? this.stlK0 : this.stlK1);
+    _style(this.knob, typeof this.dragX == 'undefined' ? this.stlK0 : this.stlK1);
     _style(this.knob, this.stlK);
   }
   Pad.prototype.getBox = function() { return this.boxSpan; }
   Pad.prototype.getRange = function() { return this.rangeSpan; }
   Pad.prototype.getKnob = function() { return this.knobSpan; }
   Pad.prototype.setValue = function(x, y) {
-    if (x === undefined) {
+    if (typeof x == 'undefined') {
       x = this.dataX.val;
       y = this.dataY.val;
     }
@@ -616,7 +627,7 @@
   JZZ.input.Slider = function() {
     var name, arg;
     if (arguments.length == 1) {
-      if (typeof arguments[0] === 'string') name = arguments[0];
+      if (typeof arguments[0] == 'string') name = arguments[0];
       else arg = arguments[0];
     }
     else { name = arguments[0]; arg = arguments[1];}
@@ -628,7 +639,7 @@
   JZZ.input.Slider.register = function() {
     var name, arg;
     if (arguments.length == 1) {
-      if (typeof arguments[0] === 'string') name = arguments[0];
+      if (typeof arguments[0] == 'string') name = arguments[0];
       else arg = arguments[0];
     }
     else { name = arguments[0]; arg = arguments[1];}
@@ -664,7 +675,7 @@
   JZZ.input.Pad = function() {
     var name, arg;
     if (arguments.length == 1) {
-      if (typeof arguments[0] === 'string') name = arguments[0];
+      if (typeof arguments[0] == 'string') name = arguments[0];
       else arg = arguments[0];
     }
     else { name = arguments[0]; arg = arguments[1];}
@@ -676,7 +687,7 @@
   JZZ.input.Pad.register = function() {
     var name, arg;
     if (arguments.length == 1) {
-      if (typeof arguments[0] === 'string') name = arguments[0];
+      if (typeof arguments[0] == 'string') name = arguments[0];
       else arg = arguments[0];
     }
     else { name = arguments[0]; arg = arguments[1];}

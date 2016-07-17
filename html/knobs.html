@@ -163,7 +163,7 @@ function print(msg) {
 }
 
 JZZ.synth.OSC.register('Web Audio');
-var out = JZZ().openMidiOut();
+var out = JZZ().openMidiOut(/^((?!Midi Through).)*$/i);
 
 var piano = JZZ.input.Kbd({parent:'keybd', from:'C5', to:'B5', wl:142, bl:96, pos:'E', 600:{pos:'N'}, onCreate:function(){
   this.getBlackKeys().setStyle({color:'#fff'});

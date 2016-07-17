@@ -18,25 +18,25 @@
   function Keyboard(arg) {
     this.notes = {};
     this.playing = [];
-    if (arg === undefined) arg = {};
+    if (typeof arg == 'undefined') arg = {};
     this.chan = _channelMap[arg.chan];
-    if (this.chan === undefined) this.chan = 0;
+    if (typeof this.chan == 'undefined') this.chan = 0;
     for (var k in arg) {
       var key = _keycode[k];
       var val = JZZ.MIDI.noteValue(arg[k]);
-      if (key !== undefined && val !== undefined) this.notes[key] = val;
+      if (typeof key != 'undefined' && typeof val != 'undefined') this.notes[key] = val;
     }
     var self = this;
     this.keydown = function(e) {
       var midi = self.notes[e.keyCode];
-      if (midi !== undefined && !self.playing[midi]) {
+      if (typeof midi != 'undefined' && !self.playing[midi]) {
         self.playing[midi] = true;
         self.noteOn(midi);
       }
     };
     this.keyup = function(e) {
       var midi = self.notes[e.keyCode];
-      if (midi !== undefined && self.playing[midi]) {
+      if (typeof midi != 'undefined' && self.playing[midi]) {
         self.playing[midi] = undefined;
         self.noteOff(midi);
       }
@@ -74,7 +74,7 @@
   JZZ.input.ASCII = function() {
     var name, arg;
     if (arguments.length == 1) {
-      if (typeof arguments[0] === 'string') name = arguments[0];
+      if (typeof arguments[0] == 'string') name = arguments[0];
       else arg = arguments[0];
     }
     else { name = arguments[0]; arg = arguments[1];}
@@ -86,7 +86,7 @@
   JZZ.input.ASCII.register = function() {
     var name, arg;
     if (arguments.length == 1) {
-      if (typeof arguments[0] === 'string') name = arguments[0];
+      if (typeof arguments[0] == 'string') name = arguments[0];
       else arg = arguments[0];
     }
     else { name = arguments[0]; arg = arguments[1];}

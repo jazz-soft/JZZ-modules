@@ -20,7 +20,7 @@ button { text-align:left;}
 
 <script><!--
 JZZ.synth.OSC.register('Web Audio');
-var output = JZZ().openMidiOut();
+var output = JZZ().openMidiOut(/^((?!Midi Through).)*$/i);
 JZZ.input.Qwerty('qh1', { id: 'qwerty1', width: 281, height: 150, octaves: 1, startNote: 'C4' })
      .or(function(){ alert('Cannot open MIDI In!\n' + this.err()); })
      .connect(output);

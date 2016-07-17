@@ -74,7 +74,7 @@ function keys2() {
 var piano1 = JZZ.input.Kbd({parent:'top', from:'C5', to:'G6', onCreate:keys1, active:false}).connect(JZZ().openMidiOut());
 
 JZZ.input.Kbd.register({parent:'bottom', from:'C5', to:'E6', active:false, channel:1})
-var piano2 = JZZ().openMidiIn('Kbd').and(keys2).connect(JZZ().openMidiOut());
+var piano2 = JZZ().openMidiIn('Kbd').and(keys2).connect(JZZ().openMidiOut(/^((?!Midi Through).)*$/i));
 
 JZZ.input.ASCII({
   Q:'C5', 2:'C#5', W:'D5', 3:'D#5', E:'E5', R:'F5', 5:'F#5', T:'G5', 6:'Ab5', Y:'A5',

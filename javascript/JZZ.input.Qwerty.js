@@ -47,7 +47,7 @@
   JZZ.input.Qwerty = function() {
     var name, arg;
     if (arguments.length == 1) {
-      if (typeof arguments[0] === 'string') name = arguments[0];
+      if (typeof arguments[0] == 'string') name = arguments[0];
       else arg = arguments[0];
     }
     else { name = arguments[0]; arg = arguments[1];}
@@ -59,7 +59,7 @@
   JZZ.input.Qwerty.register = function() {
     var name, arg;
     if (arguments.length == 1) {
-      if (typeof arguments[0] === 'string') name = arguments[0];
+      if (typeof arguments[0] == 'string') name = arguments[0];
       else arg = arguments[0];
     }
     else { name = arguments[0]; arg = arguments[1];}
