@@ -7,6 +7,12 @@
 span {display:inline-block;}
 .center {text-align:center;}
 .inner {position:absolute; bottom:0; left:0; width:100%; text-align:center;}
+#focus { padding:.5em; border:dotted 2px; background-color:#ccc;}
+#focus:focus { background-color:#ff0;}
+#focus #infocus {display:none;}
+#focus:focus #infocus {display:block;}
+#focus #outoffocus {display:block;}
+#focus:focus #outoffocus {display:none;}
 </style>
 <script src="../javascript/JZZ.js"></script>
 <script src="../javascript/JZZ.synth.OSC.js"></script>
@@ -20,9 +26,15 @@ span {display:inline-block;}
 <span><div class=center>
 <div id=top></div>
 <div id=bottom></div>
+<div id=focus>
+<div id=infocus>In focus</div>
+<div id=outoffocus>Out of focus</div>
+<div id=focusable></div>
+</div>
 </div></span>
 <p>Mouse/touch input is disabled. Use the ASCII keyboard.</p>
 
+<textarea>textarea...</textarea>
 
 <script><!--
 JZZ.synth.OSC.register('Web Audio');
@@ -70,11 +82,38 @@ function keys2() {
   this.getKey('D#6').setInnerHTML('<span class=inner>:</span>');
   this.getKey('E6').setInnerHTML('<span class=inner>?</span>');
 }
+function keys3() {
+  this.getBlackKeys().setStyle({color:'#fff'});
+  this.getKey('C6').setInnerHTML('<span class=inner>Q</span>');
+  this.getKey('C#6').setInnerHTML('<span class=inner>2</span>');
+  this.getKey('D6').setInnerHTML('<span class=inner>W</span>');
+  this.getKey('D#6').setInnerHTML('<span class=inner>3</span>');
+  this.getKey('E6').setInnerHTML('<span class=inner>E</span>');
+  this.getKey('F6').setInnerHTML('<span class=inner>R</span>');
+  this.getKey('F#6').setInnerHTML('<span class=inner>5</span>');
+  this.getKey('G6').setInnerHTML('<span class=inner>T</span>');
+  this.getKey('G#6').setInnerHTML('<span class=inner>6</span>');
+  this.getKey('A6').setInnerHTML('<span class=inner>Y</span>');
+  this.getKey('A#6').setInnerHTML('<span class=inner>7</span>');
+  this.getKey('B6').setInnerHTML('<span class=inner>U</span>');
+  this.getKey('C7').setInnerHTML('<span class=inner>I</span>');
+  this.getKey('C#7').setInnerHTML('<span class=inner>9</span>');
+  this.getKey('D7').setInnerHTML('<span class=inner>O</span>');
+  this.getKey('D#7').setInnerHTML('<span class=inner>0</span>');
+  this.getKey('E7').setInnerHTML('<span class=inner>P</span>');
+  this.getKey('F7').setInnerHTML('<span class=inner>[</span>');
+  this.getKey('F#7').setInnerHTML('<span class=inner>+</span>');
+  this.getKey('G7').setInnerHTML('<span class=inner>]</span>');
+}
 
-var piano1 = JZZ.input.Kbd({parent:'top', from:'C5', to:'G6', onCreate:keys1, active:false}).connect(JZZ().openMidiOut());
+var output = JZZ().openMidiOut(/^((?!Midi Through).)*$/i);
 
-JZZ.input.Kbd.register({parent:'bottom', from:'C5', to:'E6', active:false, channel:1})
-var piano2 = JZZ().openMidiIn('Kbd').and(keys2).connect(JZZ().openMidiOut(/^((?!Midi Through).)*$/i));
+var piano1 = JZZ.input.Kbd({at:'top', from:'C5', to:'G6', onCreate:keys1, active:false}).connect(output);
+
+JZZ.input.Kbd.register({at:'bottom', from:'C5', to:'E6', active:false, channel:1})
+var piano2 = JZZ().openMidiIn('Kbd').and(keys2).connect(output);
+
+var piano3 = JZZ.input.Kbd({at:'focusable', from:'C6', to:'G7', onCreate:keys3, active:false}).connect(output);
 
 JZZ.input.ASCII({
   Q:'C5', 2:'C#5', W:'D5', 3:'D#5', E:'E5', R:'F5', 5:'F#5', T:'G5', 6:'Ab5', Y:'A5',
@@ -86,6 +125,12 @@ JZZ.input.ASCII.register({
   N:'A5', J:'Bb5', M:'B5', '<':'C6', L:'C#6', '>':'D6', ';':'D#6', '/':'E6', channel:1
 });
 JZZ().openMidiIn('ASCII').connect(piano2);
+
+JZZ.input.ASCII({ at:'focus',
+  Q:'C6', 2:'C#6', W:'D6', 3:'D#6', E:'E6', R:'F6', 5:'F#6', T:'G6', 6:'Ab6', Y:'A6',
+  7:'Bb6', U:'B6', I:'C7', 9:'C#7', O:'D7', 0:'D#7', P:'E7', '[':'F7', '+':'F#7', ']':'G7'
+}).connect(piano3);
+
 --></script>
 
 </body>

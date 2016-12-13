@@ -2,7 +2,7 @@
   if (!JZZ) return;
   if (!JZZ.input) JZZ.input = {};
 
-  var _version = '0.6';
+  var _version = '1.0';
   function _name(name) { return name ? name : 'ASCII'; }
 
   var _keycode = {
@@ -29,23 +29,38 @@
     var self = this;
     this.keydown = function(e) {
       var midi = self.notes[e.keyCode];
-      if (typeof midi != 'undefined' && !self.playing[midi]) {
-        self.playing[midi] = true;
-        self.noteOn(midi);
+      if (typeof midi != 'undefined') {
+        e.preventDefault();
+        if (!self.playing[midi]) {
+          self.playing[midi] = true;
+          self.noteOn(midi);
+        }
       }
     };
     this.keyup = function(e) {
       var midi = self.notes[e.keyCode];
-      if (typeof midi != 'undefined' && self.playing[midi]) {
-        self.playing[midi] = undefined;
-        self.noteOff(midi);
+      if (typeof midi != 'undefined') {
+        e.preventDefault();
+        if (self.playing[midi]) {
+          self.playing[midi] = undefined;
+          self.noteOff(midi);
+        }
       }
     };
-    document.addEventListener('keydown', this.keydown);
-    document.addEventListener('keyup', this.keyup);
+    if (typeof arg.at == 'string') this.at = document.getElementById(arg.at);
+    try {
+      this.at.addEventListener('keydown', this.keydown);
+      this.at.addEventListener('keyup', this.keyup);
+      if (!this.at.tabIndex || this.at.tabIndex < 0) this.at.tabIndex = 0; // allow keyboard focus
+    }
+    catch(e) {
+      document.addEventListener('keydown', this.keydown);
+      document.addEventListener('keyup', this.keyup);
+      this.at = document;
+    }
     this._close = function() {
-      document.removeEventListener('keydown', this.keydown);
-      document.removeEventListener('keyup', this.keyup);
+      this.at.removeEventListener('keydown', this.keydown);
+      this.at.removeEventListener('keyup', this.keyup);
       for (var midi in self.playing) self.noteOff(midi);
     }
   }

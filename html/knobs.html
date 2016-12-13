@@ -165,7 +165,7 @@ function print(msg) {
 JZZ.synth.OSC.register('Web Audio');
 var out = JZZ().openMidiOut(/^((?!Midi Through).)*$/i);
 
-var piano = JZZ.input.Kbd({parent:'keybd', from:'C5', to:'B5', wl:142, bl:96, pos:'E', 600:{pos:'N'}, onCreate:function(){
+var piano = JZZ.input.Kbd({at:'keybd', from:'C5', to:'B5', wl:142, bl:96, pos:'E', 600:{pos:'N'}, onCreate:function(){
   this.getBlackKeys().setStyle({color:'#fff'});
   this.getKey('C5').setInnerHTML('<span class=key>Z</span>');
   this.getKey('C#5').setInnerHTML('<span class=key>S</span>');
@@ -182,33 +182,33 @@ var piano = JZZ.input.Kbd({parent:'keybd', from:'C5', to:'B5', wl:142, bl:96, po
 }}).connect(out).connect(print);
 JZZ.input.ASCII({Z:'C5', S:'C#5', X:'D5', D:'D#5', C:'E5', V:'F5', G:'F#5', B:'G5', H:'Ab5', N:'A5', J:'Bb5', M:'B5'}).connect(piano);
 
-var pad1 = JZZ.input.Pad({parent:'pad1', rh:96, kw:16, pos:'E', 600:{pos:'N'}, onCreate:function(){
+var pad1 = JZZ.input.Pad({at:'pad1', rh:96, kw:16, pos:'E', 600:{pos:'N'}, onCreate:function(){
   this.getBox().setStyle({backgroundColor:'#ddd'});
   this.getRange().setStyle({color:'#c0c'}).setInnerHTML('pitch bend &<br>modulation');
   this.getKnob().setStyle({borderRadius:'50%', backgroundColor:'rgba(200,0,200,0.3)'});
 }});
 
-var sld0 = JZZ.input.Slider({parent:'sld0', pos:'S', 600:{pos:'E'}, onCreate:function(){
+var sld0 = JZZ.input.Slider({at:'sld0', pos:'S', 600:{pos:'E'}, onCreate:function(){
   this.getBox().setStyle({backgroundColor:'#ddd'}).setInnerHTML('pitch bend');
   this.getRange().setStyle({color:'#00c'});
   this.getKnob().setStyle({borderRadius:'50%', backgroundColor:'rgba(0,0,255,0.3)'});
 }});
 
-var sld1 = JZZ.input.Slider({parent:'sld1', data:'mod', rh:96, pos:'E', 600:{pos:'N'}, onCreate:function(){
+var sld1 = JZZ.input.Slider({at:'sld1', data:'mod', rh:96, pos:'E', 600:{pos:'N'}, onCreate:function(){
   this.getBox().setStyle({backgroundColor:'#ddd'});
   this.getRange().setStyle({color:'#c00'});
   this.getKnob().setStyle({borderRadius:'50%', backgroundColor:'rgba(255,0,0,0.3)'});
 }});
 
-var sld2 = JZZ.input.Slider({parent:'sld2', data:'volume', rh:96, pos:'E', 600:{pos:'N'}, onCreate:function(){
+var sld2 = JZZ.input.Slider({at:'sld2', data:'volume', rh:96, pos:'E', 600:{pos:'N'}, onCreate:function(){
   this.getBox().setStyle({background: this.settings().pos == 'E' ? 'linear-gradient(to left,#bbf,#fff)' : 'linear-gradient(#bbf,#fff)'});
 }});
 
-var sld3 = JZZ.input.Slider({parent:'sld3', data:'foot', rh:96, pos:'E', 600:{pos:'N'}, onCreate:function(){
+var sld3 = JZZ.input.Slider({at:'sld3', data:'foot', rh:96, pos:'E', 600:{pos:'N'}, onCreate:function(){
   this.getBox().setStyle({background: this.settings().pos == 'E' ? 'linear-gradient(to left,#fff,#bbf)' : 'linear-gradient(#fff,#bbf)'});
 }});
 
-var sld4 = JZZ.input.Slider({parent:'sld4', data:'foot', active:false, rh:96, pos:'E', 600:{pos:'N'}, onCreate:function(){
+var sld4 = JZZ.input.Slider({at:'sld4', data:'foot', active:false, rh:96, pos:'E', 600:{pos:'N'}, onCreate:function(){
   this.getRange().setStyle({color:'#ddd', backgroundColor:'#fff'});
 }});
 

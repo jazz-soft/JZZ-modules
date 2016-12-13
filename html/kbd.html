@@ -49,11 +49,11 @@ This browser does not support SVG!
 <script><!--
 JZZ.synth.OSC.register('Web Audio');
 var output = JZZ().openMidiOut(/^((?!Midi Through).)*$/i);
-JZZ.input.Kbd.register('kbd', {parent:'resp', from:'C5', 0:{to:'B6'}, 740:{to:'E7'}, 900:{to:'B7'} });
+JZZ.input.Kbd.register('kbd', {at:'resp', from:'C5', 0:{to:'B6'}, 740:{to:'E7'}, 900:{to:'B7'} });
 JZZ().openMidiIn('kbd')
      .or(function(){ alert('Cannot open MIDI In!\n' + this.err()); })
      .connect(output);
-JZZ.input.Kbd({parent:'left', pos:'E', wl:100, bl:60, from:'C5', to:'B5'})
+JZZ.input.Kbd({at:'left', pos:'E', wl:100, bl:60, from:'C5', to:'B5'})
      .or(function(){ alert('Cannot open MIDI In!\n' + this.err()); })
      .and(function(){
        this.getKeys().setStyle({borderColor:'#00f', borderTopLeftRadius:'8px', borderBottomLeftRadius:'8px'});
@@ -61,7 +61,7 @@ JZZ.input.Kbd({parent:'left', pos:'E', wl:100, bl:60, from:'C5', to:'B5'})
        this.getBlackKeys().setStyle({backgroundColor:'#d0f'}, {backgroundColor:'#dbf'});
       })
      .connect(output);
-JZZ.input.Kbd({parent:'right', pos:'W', ww:21, bw:12, from:'C5', to:'B6'})
+JZZ.input.Kbd({at:'right', pos:'W', ww:21, bw:12, from:'C5', to:'B6'})
      .or(function(){ alert('Cannot open MIDI In!\n' + this.err()); })
      .and(function(){
        this.getKeys().setStyle({borderColor:'#888', borderTopRightRadius:'5px', borderBottomRightRadius:'5px'});
@@ -69,7 +69,7 @@ JZZ.input.Kbd({parent:'right', pos:'W', ww:21, bw:12, from:'C5', to:'B6'})
        this.getBlackKeys('C5', 'B5').setStyle({backgroundColor:'#fff'}, {});
       })
      .connect(output);
-JZZ.input.Kbd({parent:'top', pos:'N', from:'C5', to:'B5', rev:true})
+JZZ.input.Kbd({at:'top', pos:'N', from:'C5', to:'B5', rev:true})
      .or(function(){ alert('Cannot open MIDI In!\n' + this.err()); })
      .and(function() {
        this.getKey('C5').setInnerHTML('<span class=inner>C</span>');
@@ -86,7 +86,7 @@ JZZ.input.Kbd({parent:'top', pos:'N', from:'C5', to:'B5', rev:true})
        this.getKey('A#5').setStyle({backgroundColor:'#a0c'}, {});
      })
      .connect(output);
-JZZ.input.Kbd({parent:'bottom', pos:'S', wl:126, bl:80, from:'C5', to:'B5'})
+JZZ.input.Kbd({at:'bottom', pos:'S', wl:126, bl:80, from:'C5', to:'B5'})
      .or(function(){ alert('Cannot open MIDI In!\n' + this.err()); })
      .and(function() {
        this.getWhiteKeys().setStyle({backgroundImage:'url("bgw.png")'}, {backgroundImage:'url("bg1.png")'});

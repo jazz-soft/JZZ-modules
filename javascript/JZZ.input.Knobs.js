@@ -2,7 +2,7 @@
   if (!JZZ) return;
   if (!JZZ.input) JZZ.input = {};
 
-  var _version = '0.5';
+  var _version = '1.0';
   function _name(name, deflt) { return name ? name : deflt; }
 
   function _copy(obj) {
@@ -157,7 +157,7 @@
     this.bins.sort(function(a, b){return a-b});
   }
   _Knob.prototype._close = function() {
-    if (this.parent) this.parent.innerHTML = '';
+    if (this.at) this.at.innerHTML = '';
     if (this.mouseUpHandler) window.removeEventListener("mouseup", this.mouseUpHandler);
   }
   _Knob.prototype.create = function() {
@@ -170,9 +170,9 @@
     this.createCurrent();
   }
   _Knob.prototype.createCurrent = function() {
-    if (this.parent) this.parent.innerHTML = '';
-    if (typeof this.current.parent == 'string') this.current.parent = document.getElementById(this.current.parent);
-    try { this.createAt(this.current.parent); }
+    if (this.at) this.at.innerHTML = '';
+    if (typeof this.current.at == 'string') this.current.at = document.getElementById(this.current.at);
+    try { this.createAt(this.current.at); }
     catch(e) {
       if (!this.bottom) {
         this.bottom = document.createElement('div'); 
@@ -257,8 +257,8 @@
     _initKnob.call(this, arg, {pos:'N', rw:2, rh:128, kw:24, kh:16});
   }
   Slider.prototype = new _Knob;
-  Slider.prototype.createAt = function(parent) {
-    parent.innerHTML = '';
+  Slider.prototype.createAt = function(at) {
+    at.innerHTML = '';
     var bh = parseInt(this.current.bh);
     var bw = parseInt(this.current.bw);
     var rh = parseInt(this.current.rh); if (!rh) rh = 128;
@@ -342,14 +342,14 @@
     box.appendChild(range);
     box.ondragstart = _returnFalse;
     box.onselectstart = _returnFalse;
-    parent.appendChild(box);
-    if (!this.parent && this.bins.length > 1) {
+    at.appendChild(box);
+    if (!this.at && this.bins.length > 1) {
       var self = this;
       this.resize = function() { self.onResize(); }
       window.addEventListener('resize', this.resize);
     }
-    this.current.parent = parent;
-    this.parent = parent;
+    this.current.at = at;
+    this.at = at;
     this.setValue();
     _style(this.box, typeof this.dragX == 'undefined' ? this.stlB0 : this.stlB1);
     _style(this.box, this.stlB);
@@ -414,8 +414,8 @@
     _initKnob.call(this, arg, {pos:'N', rw:128, rh:128, kw:24, kh:16});
   }
   Pad.prototype = new _Knob;
-  Pad.prototype.createAt = function(parent) {
-    parent.innerHTML = '';
+  Pad.prototype.createAt = function(at) {
+    at.innerHTML = '';
     var bh = parseInt(this.current.bh);
     var bw = parseInt(this.current.bw);
     var rh = parseInt(this.current.rh); if (!rh) rh = 128;
@@ -506,14 +506,14 @@
     box.appendChild(range);
     box.ondragstart = _returnFalse;
     box.onselectstart = _returnFalse;
-    parent.appendChild(box);
-    if (!this.parent && this.bins.length > 1) {
+    at.appendChild(box);
+    if (!this.at && this.bins.length > 1) {
       var self = this;
       this.resize = function() { self.onResize(); }
       window.addEventListener('resize', this.resize);
     }
-    this.current.parent = parent;
-    this.parent = parent;
+    this.current.at = at;
+    this.at = at;
     this.setValue();
     _style(this.box, typeof this.dragX == 'undefined' ? this.stlB0 : this.stlB1);
     _style(this.box, this.stlB);

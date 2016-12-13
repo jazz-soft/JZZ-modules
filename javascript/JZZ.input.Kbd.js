@@ -2,7 +2,7 @@
   if (!JZZ) return;
   if (!JZZ.input) JZZ.input = {};
 
-  var _version = '0.9';
+  var _version = '1.0';
   function _name(name) { return name ? name : 'Kbd'; }
 
   function _copy(obj) {
@@ -207,8 +207,8 @@
       this.createWithKeys(this.current.keys);
       return;
     }
-    if (typeof this.current.parent == 'string') this.current.parent = document.getElementById(this.current.parent);
-    try { this.createAt(this.current.parent); }
+    if (typeof this.current.at == 'string') this.current.at = document.getElementById(this.current.at);
+    try { this.createAt(this.current.at); }
     catch(e) {
       if (!this.bottom) {
         this.bottom = document.createElement('div'); 
@@ -230,8 +230,8 @@
     if (this.current.onCreate) this.current.onCreate.apply(this);
     this.setListeners();
   }
-  Piano.prototype.createAt = function(parent) {
-    parent.innerHTML = '';
+  Piano.prototype.createAt = function(at) {
+    at.innerHTML = '';
     var pos = this.current.pos.toUpperCase();
     var first = _keyNum(this.current.from);
     var last = _keyNum(this.current.to);
@@ -337,9 +337,9 @@
       piano.appendChild(key);
     }
     if (this.current.onCreate) this.current.onCreate.apply(this);
-    parent.appendChild(piano);
-    this.current.parent = parent;
-    this.parent = parent;
+    at.appendChild(piano);
+    this.current.at = at;
+    this.at = at;
     this.setListeners();
   }
   Piano.prototype.setListeners = function() {
@@ -396,7 +396,7 @@
         this.keys[midi].removeEventListener("touchend", this.touchHandle);
       }
     }
-    if (this.parent) this.parent.innerHTML = '';
+    if (this.at) this.at.innerHTML = '';
   }
   Piano.prototype.settings = function() { return _copy(this.current); }
   Piano.prototype.onResize = function() {
