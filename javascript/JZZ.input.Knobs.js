@@ -2,7 +2,7 @@
   if (!JZZ) return;
   if (!JZZ.input) JZZ.input = {};
 
-  var _version = '1.0';
+  var _version = '1.1';
   function _name(name, deflt) { return name ? name : deflt; }
 
   function _copy(obj) {
@@ -279,7 +279,7 @@
 
     if (!bh) bh = kh + rh + 2;
     if (!bw) bw = (kw > rw ? kw : rw) + 2;
-    this.stlB = { display:'inline-block', position:'relative', margin:'0', padding:'0', userSelect:'none', KhtmlUserSelect:'none', MozUserSelect:'none', MsUserSelect:'none', OUserSelect:'none', WebkitUserSelect:'none' };
+    this.stlB = { display:'inline-block', position:'relative', margin:'0', padding:'0', userSelect:'none', KhtmlUserSelect:'none', MozUserSelect:'none', MsUserSelect:'none', OUserSelect:'none', WebkitUserSelect:'none', cursor:'default' };
     this.stlB0 = { borderStyle:'none' };
     this.stlB1 = { borderStyle:'none' };
     this.stlR = { display:'inline-block', position:'absolute', margin:'0', padding:'0', borderStyle:'solid', borderWidth:'1px' };
@@ -443,7 +443,7 @@
 
     if (!bh) bh = kh + rh + 2;
     if (!bw) bw = kw + rw + 2;
-    this.stlB = { display:'inline-block', position:'relative', margin:'0', padding:'0', userSelect:'none', KhtmlUserSelect:'none', MozUserSelect:'none', MsUserSelect:'none', OUserSelect:'none', WebkitUserSelect:'none' };
+    this.stlB = { display:'inline-block', position:'relative', margin:'0', padding:'0', userSelect:'none', KhtmlUserSelect:'none', MozUserSelect:'none', MsUserSelect:'none', OUserSelect:'none', WebkitUserSelect:'none', cursor:'default' };
     this.stlB0 = { borderStyle:'none' };
     this.stlB1 = { borderStyle:'none' };
     this.stlR = { display:'inline-block', position:'absolute', margin:'0', padding:'0', borderStyle:'solid', borderWidth:'1px' };

@@ -2,7 +2,7 @@
   if (!JZZ) return;
   if (!JZZ.input) JZZ.input = {};
 
-  var _version = '1.0';
+  var _version = '1.1';
   function _name(name) { return name ? name : 'Kbd'; }
 
   function _copy(obj) {
@@ -258,6 +258,7 @@
     piano.style.WebkitUserSelect = 'none';
     piano.style.MsUserSelect = 'none';
     piano.style.KhtmlUserSelect = 'none';
+    piano.style.cursor = 'default';
 
     if (pos == 'E' || pos == 'W') {
       piano.style.width = h + 'px';
