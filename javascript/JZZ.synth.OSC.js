@@ -21,12 +21,17 @@
       var c = b&15;
       var s = b>>4;
       if (s == 9) this.channel(c).play(n, v);
-      if (s == 8) this.channel(c).play(n, 0);
+      else if (s == 8) this.channel(c).play(n, 0);
+      else if (s == 0xb) {
+        if (n == 0x78 || n == 0x7b) this.channel(c).allSoundOff();
+        else if (n == 0x40) this.channel(c).damper(!!v);
+      }
     }
   }
 
   function Channel() {
     this.notes = [];
+    this.sustain = false;
     this.note = function(n) {
       if (!this.notes[n]) this.notes[n] = new Note(n, this);
       return this.notes[n];
@@ -34,18 +39,35 @@
     this.play = function(n, v) {
       this.note(n).play(v);
     }
+    this.allSoundOff = function() {
+      for (var n = 0; n < this.notes.length; n++) if (this.notes[n]) this.notes[n].stop();
+    }
+    this.damper = function(x) {
+      if (!x && this.sustain != x) {
+        for (var n = 0; n < this.notes.length; n++) if (this.notes[n] && this.notes[n].sustain) this.notes[n].stop();
+      }
+      this.sustain = x;
+    }
   }
 
   function Note(n, c) {
     this.note = n;
     this.channel = c;
     this.freq = 440 * Math.pow(2,(n-69)/12);
-    this.play = function(v) {
+    this.stop = function() {
       try {
         if (this.oscillator) this.oscillator.stop(0);
+        this.oscillator = undefined;
+        this.sustain = false;
       }
       catch (e) {}
-      if (!v) return;
+    }
+    this.play = function(v) {
+      if (v || !this.channel.sustain) this.stop();
+      if (!v) {
+        this.sustain = this.channel.sustain;
+        return;
+      }
       var ampl = v/127;
       this.oscillator = _ac.createOscillator();
       this.oscillator.type = 'sawtooth';
@@ -75,7 +97,7 @@
       type: 'Web Audo',
       name: name,
       manufacturer: 'virtual',
-      version: '0.2'
+      version: '0.3'
     };
   }
 

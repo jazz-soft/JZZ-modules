@@ -222,6 +222,7 @@
   function _defaultPortInfo() {
     if (typeof this._info.engine == 'undefined') this._info.engine = 'none';
     if (typeof this._info.sysex == 'undefined') this._info.sysex = true;
+    if (typeof this._info.type == 'undefined') this._info.type = 'unknown';
   }
 
   function _openMidiOut(port, arg) {
