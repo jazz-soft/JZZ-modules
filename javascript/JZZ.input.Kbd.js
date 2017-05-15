@@ -2,7 +2,7 @@
   if (!JZZ) return;
   if (!JZZ.input) JZZ.input = {};
 
-  var _version = '1.1';
+  var _version = '1.2';
   function _name(name) { return name ? name : 'Kbd'; }
 
   function _copy(obj) {
@@ -163,17 +163,25 @@
     this.noteOff(midi);
   }
   Piano.prototype.forward = function(msg) {
-    var midi = msg[1];
+    var n = msg[1];
     if (msg.getChannel() == this.chan) {
+      var s = msg[0] >> 4;
       if (msg.isNoteOn()) {
-        this.playing[midi] = 'E';
-        _style(this.keys[midi], this.stl1[midi]);
-        _style(this.keys[midi], this.locs[midi]);
+        this.playing[n] = 'E';
+        _style(this.keys[n], this.stl1[n]);
+        _style(this.keys[n], this.locs[n]);
       }
       else if (msg.isNoteOff()) {
-        this.playing[midi] = undefined;
-        _style(this.keys[midi], this.stl0[midi]);
-        _style(this.keys[midi], this.locs[midi]);
+        this.playing[n] = undefined;
+        _style(this.keys[n], this.stl0[n]);
+        _style(this.keys[n], this.locs[n]);
+      }
+      else if (s == 0xb && (n == 0x78 || n == 0x7b)) { // all notes/snd off
+        for (var k in this.playing) if (this.playing[k]) {
+          this.playing[k] = undefined;
+          _style(this.keys[k], this.stl0[k]);
+          _style(this.keys[k], this.locs[k]);
+        }
       }
     }
     this.emit(msg);
