@@ -2,7 +2,7 @@
   if (!JZZ) return;
   if (!JZZ.input) JZZ.input = {};
 
-  var _version = '1.1';
+  var _version = '1.2';
   function _name(name, deflt) { return name ? name : deflt; }
 
   function _copy(obj) {
@@ -246,7 +246,6 @@
       x.restyle();
       x.onMouseUp(e);
     }
-    _firefoxBug = e.buttons;
   }; }
   function _TouchStart(x) { return function(e) { x.onTouchStart(e); }; }
   function _TouchMove(x) { return function(e) { x.onTouchMove(e); }; }

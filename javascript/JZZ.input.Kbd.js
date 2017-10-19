@@ -2,7 +2,7 @@
   if (!JZZ) return;
   if (!JZZ.input) JZZ.input = {};
 
-  var _version = '1.2';
+  var _version = '1.3';
   function _name(name) { return name ? name : 'Kbd'; }
 
   function _copy(obj) {
@@ -25,14 +25,9 @@
   function _style(key, stl) {
     for(var k in stl) key.style[k] = stl[k];
   }
-  function _keyNum(name) {
-    if (!(typeof name == 'string')) return undefined;
-    var base = {C:0, D:1, E:2, F:3, G:4, A:5, B:6}[name.substr(0, 1).toUpperCase()];
-    if (typeof base == 'undefined') return undefined;
-    var oct = name.substr(1);
-    if (parseInt(oct) != oct) return undefined;
-    var num = 7 * oct + base;
-    return num >= 0 && num <= 74 ? num : undefined;
+  function _keyNum(n, up) {
+    n = JZZ.MIDI.noteValue(n);
+    return (up ? [0, 1, 1, 2, 2, 3, 4, 4, 5, 5, 6, 6] : [0, 0, 1, 1, 2, 3, 3, 4, 4, 5, 5, 6])[n % 12] + Math.floor(n / 12) * 7;
   }
   function _keyMidi(n) {
     return Math.floor(n / 7) * 12 + {0:0, 1:2, 2:4, 3:5, 4:7, 5:9, 6:11}[n % 7];
@@ -73,14 +68,12 @@
         piano.release(midi);
         piano.mouseDown = false;
       }
-      _firefoxBug = e.buttons;
     };
   }
   function _handleMouseOff(piano) {
     return function(e) {
       e = _fixBtnUp(e);
       if (_lftBtnUp(e)) piano.mouseDown = false;
-      _firefoxBug = e.buttons;
     };
   }
   function _watchMouseButtons() {
@@ -128,19 +121,19 @@
       if (key == parseInt(key)) this.params[key] = _copy(arg[key]);
       else {
         if (key == 'chan') continue;
-        if ((key == 'from' || key == 'to') && typeof _keyNum(arg[key]) == 'undefined') continue;
+        if ((key == 'from' || key == 'to') && typeof JZZ.MIDI.noteValue(arg[key]) == 'undefined') continue;
         common[key] = arg[key];
       }
     }
     for (key in this.params) {
       this.bins.push(key);
       for (var k in common) {
-        if ((k == 'from' || k == 'to') && typeof _keyNum(this.params[key][k]) == 'undefined') this.params[key][k] = common[k];
+        if ((k == 'from' || k == 'to') && (typeof this.params[key][k] == 'undefined' || typeof JZZ.MIDI.noteValue(this.params[key][k]) == 'undefined')) this.params[key][k] = common[k];
         if (!(k in this.params[key])) this.params[key][k] = common[k];
       }
       var from = this.params[key]['from'];
       var to = this.params[key]['to'];
-      if (_keyNum(from) > _keyNum(to)) {
+      if (JZZ.MIDI.noteValue(from) > JZZ.MIDI.noteValue(to)) {
         this.params[key]['from'] = to;
         this.params[key]['to'] = from;
       }
@@ -242,7 +235,7 @@
     at.innerHTML = '';
     var pos = this.current.pos.toUpperCase();
     var first = _keyNum(this.current.from);
-    var last = _keyNum(this.current.to);
+    var last = _keyNum(this.current.to, true);
     var num = last - first + 1;
     var w = num * this.current.ww + 1;
     var h = this.current.wl + 1;
