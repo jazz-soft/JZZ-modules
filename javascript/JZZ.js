@@ -1,6 +1,6 @@
 (function() {
 
-  var _version = '0.3.9';
+  var _version = '0.4.0';
 
   // _R: common root for all async objects
   function _R() {
@@ -53,7 +53,12 @@
   _R.prototype.or = function(func) { this._push(_or, [func]); return this; }
 
   _R.prototype._info = {};
-  _R.prototype.info = function() { return _clone(this._orig._info); }
+  _R.prototype.info = function() {
+    var info = _clone(this._orig._info);
+    if (typeof info.engine == 'undefined') info.engine = 'none';
+    if (typeof info.sysex == 'undefined') info.sysex = true;
+    return info;
+  }
   _R.prototype.name = function() { return this.info().name; }
 
   function _close(obj) {
@@ -87,11 +92,11 @@
   }
 
   function _push(arr, obj) {
-    for (var i in arr) if (arr[i] === obj) return;
+    for (var i = 0; i < arr.length; i++) if (arr[i] === obj) return;
     arr.push(obj);
   }
   function _pop(arr, obj) {
-    for (var i in arr) if (arr[i] === obj) {
+    for (var i = 0; i < arr.length; i++) if (arr[i] === obj) {
       arr.splice(i, 1);
       return;
     }
@@ -116,14 +121,14 @@
     if (obj instanceof Object) {
       for (var i = 0; i < key.length; i++) if (key[i] === obj) return val[i];
       var ret;
-      if (obj instanceof Array) ret = [];
-      else { ret = {}; key.push(obj); val.push(ret); }
-      for(var k in obj) ret[k] = _clone(obj[k], key, val);
+      if (obj instanceof Array) ret = []; else ret = {};
+      key.push(obj); val.push(ret);
+      for(var k in obj) if (obj.hasOwnProperty(k)) ret[k] = _clone(obj[k], key, val);
       return ret;
     }
     return obj;
   }
-  _J.prototype._info = { name: 'JZZ.js', ver: _version };
+  _J.prototype._info = { name: 'JZZ.js', ver: _version, version:  _version };
 
   var _outs = [];
   var _ins = [];
@@ -219,18 +224,11 @@
     port._crash(msg);
   }
 
-  function _defaultPortInfo() {
-    if (typeof this._info.engine == 'undefined') this._info.engine = 'none';
-    if (typeof this._info.sysex == 'undefined') this._info.sysex = true;
-    if (typeof this._info.type == 'undefined') this._info.type = 'unknown';
-  }
-
   function _openMidiOut(port, arg) {
     var arr = _filterList(arg, _outs);
     if (!arr.length) { _notFound(port, arg); return; }
     function pack(x){ return function(){x.engine._openOut(this, x.name);};};
     for (var i=0; i<arr.length; i++) arr[i] = pack(arr[i]);
-    port._slip(_defaultPortInfo, []);
     port._slip(_tryAny, [arr]);
     port._resume();
   }
@@ -246,7 +244,6 @@
     if (!arr.length) { _notFound(port, arg); return; }
     function pack(x){ return function(){x.engine._openIn(this, x.name);};};
     for (var i=0; i<arr.length; i++) arr[i] = pack(arr[i]);
-    port._slip(_defaultPortInfo, []);
     port._slip(_tryAny, [arr]);
     port._resume();
   }
@@ -281,8 +278,8 @@
     return this;
   }
   _M.prototype._emit = function(msg) {
-    for (var i in this._handles) this._handles[i].apply(this, [MIDI(msg)._stamp(this)]);
-    for (var i in this._outs) {
+    for (var i = 0; i < this._handles.length; i++) this._handles[i].apply(this, [MIDI(msg)._stamp(this)]);
+    for (var i = 0; i < this._outs.length; i++) {
       var m = MIDI(msg);
       if (!m._stamped(this._outs[i])) this._outs[i].send(m._stamp(this));
     }
@@ -373,7 +370,7 @@
     }
     this._break();
   }
-  // Chrome CRX
+  // Web-extension
   function _tryCRX() {
     var self = this;
     var inst;
@@ -414,7 +411,7 @@
         if (opt && opt.sysex === true) ret.push(_tryWebMIDIsysex);
         if (!opt || opt.sysex !== true || opt.degrade === true) ret.push(_tryWebMIDI);
       }
-      else if (arr[i] == 'crx') ret.push(_tryCRX);
+      else if (arr[i] == 'extension') ret.push(_tryCRX);
       else if (arr[i] == 'plugin') ret.push(_tryJazzPlugin);
     }
     ret.push(_initNONE);
@@ -422,7 +419,7 @@
   }
 
   function _filterEngineNames(opt) {
-    var web = ['crx', 'webmidi', 'plugin'];
+    var web = ['extension', 'webmidi', 'plugin'];
     if (!opt || !opt.engine) return web;
     var arr = opt.engine instanceof Array ? opt.engine : [opt.engine];
     var dup = {};
@@ -518,7 +515,6 @@
       var impl = _engine._inMap[name];
       if (!impl) {
         if (_engine._pool.length <= _engine._inArr.length) _engine._pool.push(_engine._newPlugin());
-        function makeHandle(x) { return function(t, a) { x.handle(t, a); }; };
         impl = {
           name: name,
           clients: [],
@@ -532,21 +528,23 @@
           },
           _close: function(port){ _engine._closeIn(port); },
           handle: function(t, a) {
-            for (var i in this.clients) {
+            for (var i = 0; i < this.clients.length; i++) {
               var msg = MIDI(a);
               this.clients[i]._emit(msg);
             }
           }
         };
+        function makeHandle(x) { return function(t, a) { x.handle(t, a); }; };
+        impl.onmidi = makeHandle(impl);
         var plugin = _engine._pool[_engine._inArr.length];
         impl.plugin = plugin;
         _engine._inArr.push(impl);
         _engine._inMap[name] = impl;
       }
       if (!impl.open) {
-        var s = plugin.MidiInOpen(name, makeHandle(impl));
+        var s = impl.plugin.MidiInOpen(name, impl.onmidi);
         if (s !== name) {
-          if (s) plugin.MidiInClose();
+          if (s) impl.plugin.MidiInClose();
           port._break(); return;
         }
         impl.open = true;
@@ -573,7 +571,7 @@
       }
     }
     _engine._close = function() {
-      for (var i in _engine._inArr) if (_engine._inArr[i].open) _engine._inArr[i].plugin.MidiInClose();
+      for (var i = 0; i < _engine._inArr.length; i++) if (_engine._inArr[i].open) _engine._inArr[i].plugin.MidiInClose();
     }
     _J.prototype._time = function() { return _engine._main.Time(); }
   }
@@ -644,6 +642,7 @@
         else impl = undefined;
       }
       if (impl) {
+        if (impl.dev.open) impl.dev.open();
         port._orig._impl = impl;
         _push(impl.clients, port._orig);
         port._info = impl.info;
@@ -668,7 +667,7 @@
           },
           _close: function(port){ _engine._closeIn(port); },
           handle: function(evt) {
-            for (var i in this.clients) {
+            for (var i = 0; i < this.clients.length; i++) {
               var msg = MIDI([].slice.call(evt.data));
               this.clients[i]._emit(msg);
             }
@@ -686,6 +685,7 @@
         else impl = undefined;
       }
       if (impl) {
+        if (impl.dev.open) impl.dev.open();
         port._orig._impl = impl;
         _push(impl.clients, port._orig);
         port._info = impl.info;
@@ -695,17 +695,23 @@
     }
     _engine._closeOut = function(port) {
       var impl = port._impl;
+      if (!impl.clients.length) {
+        if (impl.dev.close) impl.dev.close();
+      }
       _pop(impl.clients, port._orig);
     }
     _engine._closeIn = function(port) {
       var impl = port._impl;
       _pop(impl.clients, port._orig);
+      if (!impl.clients.length) {
+        if (impl.dev.close) impl.dev.close();
+      }
     }
     _engine._close = function() {
     }
   }
   function _initCRX(msg, ver) {
-    _engine._type = 'crx';
+    _engine._type = 'extension';
     _engine._version = ver;
     _engine._sysex = true;
     _engine._pool = [];
@@ -751,14 +757,16 @@
         plugin.output = impl;
         _engine._outArr.push(impl);
         _engine._outMap[name] = impl;
-        if (plugin.ready) impl._start();
       }
       port._orig._impl = impl;
       _push(impl.clients, port._orig);
       port._info = impl.info;
       port._receive = function(arg) { impl._receive(arg); }
       port._close = function() { impl._close(this); }
-      if (!impl.open) port._pause();
+      if (!impl.open) {
+        if (impl.plugin.ready) impl._start();
+        port._pause();
+      }
     }
     _engine._openIn = function(port, name) {
       var impl = _engine._inMap[name];
@@ -783,13 +791,15 @@
         plugin.input = impl;
         _engine._inArr.push(impl);
         _engine._inMap[name] = impl;
-        if (plugin.ready) impl._start();
       }
       port._orig._impl = impl;
       _push(impl.clients, port._orig);
       port._info = impl.info;
       port._close = function() { impl._close(this); }
-      if (!impl.open) port._pause();
+      if (!impl.open) {
+        if (impl.plugin.ready) impl._start();
+        port._pause();
+      }
     }
     _engine._closeOut = function(port) {
       var impl = port._impl;
@@ -838,15 +848,21 @@
         else if (a[0] === 'openout') {
           var impl = _engine._pool[a[1]].output;
           if (impl) {
-            impl.open = true;
-            if (impl.clients) for (var i=0; i<impl.clients.length; i++) impl.clients[i]._resume();
+            if (a[2] == impl.name) {
+              impl.open = true;
+              if (impl.clients) for (var i = 0; i < impl.clients.length; i++) impl.clients[i]._resume();
+            }
+            else if (impl.clients) for (var i = 0; i < impl.clients.length; i++) impl.clients[i]._crash();
           }
         }
         else if (a[0] === 'openin') {
           var impl = _engine._pool[a[1]].input;
           if (impl) {
-            impl.open = true;
-            if (impl.clients) for (var i=0; i<impl.clients.length; i++) impl.clients[i]._resume();
+            if (a[2] == impl.name) {
+              impl.open = true;
+              if (impl.clients) for (var i = 0; i < impl.clients.length; i++) impl.clients[i]._resume();
+            }
+            else if (impl.clients) for (var i = 0; i < impl.clients.length; i++) impl.clients[i]._crash();
           }
         }
         else if (a[0] === 'midi') {
@@ -869,7 +885,7 @@
   JZZ.info = function() { return _J.prototype.info();}
   JZZ.createNew = function(arg) {
     var obj = new _M();
-    if (arg instanceof Object) for (var k in arg) obj[k] = arg[k];
+    if (arg instanceof Object) for (var k in arg) if (arg.hasOwnProperty(k)) obj[k] = arg[k];
     obj._resume();
     return obj;
   }
@@ -1106,6 +1122,7 @@
 
   var _noteMap = {c:0, d:2, e:4, f:5, g:7, a:9, b:11, h:11};
   for (var k in _noteMap) {
+    if (!_noteMap.hasOwnProperty(k)) continue;
     for (var n=0; n<12; n++) {
       var m = _noteMap[k] + n*12;
       if (m > 127) break;
@@ -1169,9 +1186,8 @@
     MIDI[name] = function(){ return new MIDI(func.apply(0, arguments));};
     _M.prototype[name] = function(){ this.send(func.apply(0, arguments)); return this;};
   }
-  for (var k in _helper) {
-    _copyHelper(k, _helper[k]);
-  }
+  for (var k in _helper) if (_helper.hasOwnProperty(k)) _copyHelper(k, _helper[k]);
+
   var _channelMap = { a:10, b:11, c:12, d:13, e:14, f:15, A:10, B:11, C:12, D:13, E:14, F:15 };
   for (var k = 0; k < 16; k++) _channelMap[k] = k;
   MIDI.prototype.getChannel = function() {
@@ -1369,18 +1385,16 @@
   JZZ.lib.openMidiOut = function(name, engine) {
     var port = new _M();
     engine._openOut(port, name);
-    _defaultPortInfo.apply(port);
     return port;
   }
   JZZ.lib.openMidiIn = function(name, engine) {
     var port = new _M();
     engine._openIn(port, name);
-    _defaultPortInfo.apply(port);
     return port;
   }
   JZZ.lib.registerMidiOut = function(name, engine) {
     var x = engine._info(name);
-    for (var i in _virtual._outs) if (_virtual._outs[i].name == x.name) return false;
+    for (var i = 0; i < _virtual._outs.length; i++) if (_virtual._outs[i].name == x.name) return false;
     x.engine = engine;
     _virtual._outs.push(x);
     if (_jzz && _jzz._bad) { _jzz._repair(); _jzz._resume(); }
@@ -1388,7 +1402,7 @@
   }
   JZZ.lib.registerMidiIn = function(name, engine) {
     var x = engine._info(name);
-    for (var i in _virtual._ins) if (_virtual._ins[i].name == x.name) return false;
+    for (var i = 0; i < _virtual._ins.length; i++) if (_virtual._ins[i].name == x.name) return false;
     x.engine = engine;
     _virtual._ins.push(x);
     if (_jzz && _jzz._bad) { _jzz._repair(); _jzz._resume(); }
