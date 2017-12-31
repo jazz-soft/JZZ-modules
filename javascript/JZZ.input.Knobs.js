@@ -2,7 +2,7 @@
   if (!JZZ) return;
   if (!JZZ.input) JZZ.input = {};
 
-  var _version = '1.2';
+  var _version = '1.3';
   function _name(name, deflt) { return name ? name : deflt; }
 
   function _copy(obj) {
@@ -610,6 +610,8 @@
   }
   EngSlider.prototype._openIn = function(port, name) {
     var slider = new Slider(this._arg);
+    slider.connect = function() { port.connect.apply(port, arguments); }
+    slider.send = function() { port.send.apply(port, arguments); }
     slider.create();
     slider.emit = function(msg) { port._emit(msg); };
     port._info = this._info(name);
@@ -658,6 +660,8 @@
   }
   EngPad.prototype._openIn = function(port, name) {
     var pad = new Pad(this._arg);
+    pad.connect = function() { port.connect.apply(port, arguments); }
+    pad.send = function() { port.send.apply(port, arguments); }
     pad.create();
     pad.emit = function(msg) { port._emit(msg); };
     port._info = this._info(name);
