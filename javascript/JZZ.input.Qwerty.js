@@ -30,7 +30,6 @@
     try {
       var qwerty = new QwertyHancock(this._arg);
       qwerty.keyDown = function (note, frequency) {
-        JZZ.util.iosSound(); // just for case
         port._emit(JZZ.MIDI(0x90, note, 127));
       };
       qwerty.keyUp = function (note, frequency) {

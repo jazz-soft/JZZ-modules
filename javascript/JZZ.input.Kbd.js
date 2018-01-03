@@ -2,7 +2,7 @@
   if (!JZZ) return;
   if (!JZZ.input) JZZ.input = {};
 
-  var _version = '1.4';
+  var _version = '1.5';
   function _name(name) { return name ? name : 'Kbd'; }
 
   function _copy(obj) {
@@ -492,7 +492,7 @@
     piano.send = function() { port.send.apply(port, arguments); }
     piano.connect = function() { port.connect.apply(port, arguments); }
     piano.create();
-    piano.noteOn = function(note) { JZZ.util.iosSound(); port._emit(JZZ.MIDI(0x90 + this.chan, note, 127)); };
+    piano.noteOn = function(note) { port._emit(JZZ.MIDI(0x90 + this.chan, note, 127)); };
     piano.noteOff = function(note) { port._emit(JZZ.MIDI(0x80 + this.chan, note, 127)); };
     piano.emit = function(msg) { port._emit(msg); };
     port._info = this._info(name);

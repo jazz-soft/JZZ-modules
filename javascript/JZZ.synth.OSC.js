@@ -2,10 +2,7 @@
   if (!JZZ) return;
   if (!JZZ.synth) JZZ.synth = {};
 
-  var _ac;
-  var AudioContext = window.AudioContext || window.webkitAudioContext;
-  if (AudioContext) _ac = new AudioContext();
-  if (_ac && !_ac.createGain) _ac.createGain = _ac.createGainNode;
+  var _ac = JZZ.lib.getAudioContext();
 
   function Synth() {
     this.channels = [];
@@ -71,7 +68,7 @@
       var ampl = v/127;
       this.oscillator = _ac.createOscillator();
       this.oscillator.type = 'sawtooth';
-      this.oscillator.frequency.value = this.freq;
+      this.oscillator.frequency.setTargetAtTime(this.freq, _ac.currentTime, 0.01);
       if (!this.oscillator.start) this.oscillator.start = this.oscillator.noteOn;
       if (!this.oscillator.stop) this.oscillator.stop = this.oscillator.noteOff;
 
@@ -97,7 +94,7 @@
       type: 'Web Audo',
       name: name,
       manufacturer: 'virtual',
-      version: '0.3'
+      version: '0.4'
     };
   }
 
