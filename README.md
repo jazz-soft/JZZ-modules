@@ -4,11 +4,11 @@ Additional modules for [**JZZ.js**](https://github.com/jazz-soft/JZZ):
 
 [**JZZ.synth.MIDIjs**](#jzzsynthmidijs)  
 [**JZZ.synth.Timbre**](#jzzsynthtimbre)  
-[**JZZ.synth.OSC**](#jzzsynthosc)  
+[**JZZ.synth.OSC**](#jzzsynthosc) - moved to **https://github.com/jazz-soft/JZZ-synth-OSC**  
 [**JZZ.input.Qwerty**](#jzzinputqwerty)  
-[**JZZ.input.Kbd**](#jzzinputkbd)  
-[**JZZ.input.ASCII**](#jzzinputascii)  
-[**JZZ.input.Knobs**](#jzzinputknobs)  
+[**JZZ.input.Kbd**](#jzzinputkbd) - moved to **https://github.com/jazz-soft/JZZ-input-Kbd**  
+[**JZZ.input.ASCII**](#jzzinputascii) - moved to **https://github.com/jazz-soft/JZZ-input-Kbd**  
+[**JZZ.input.Knobs**](#jzzinputknobs) - moved to **https://github.com/jazz-soft/JZZ-input-Kbd**  
 
 ## JZZ.synth.MIDIjs
 
@@ -78,6 +78,8 @@ Create a custom MIDI-Out port implemented via Web Audio AudioContext.oscillator.
 [![ios](http://jazz-soft.github.io/img/ios.jpg)](https://jazz-soft.github.io/modules/osc)
 [![android](http://jazz-soft.github.io/img/android.jpg)](https://jazz-soft.github.io/modules/osc)
 
+(moved to **https://github.com/jazz-soft/JZZ-synth-OSC**)
+
 ##### Example
 
     <script src='javascript/JZZ.js'></script>
@@ -133,6 +135,8 @@ Mouse and multitouch support.
 Custom styles.
 Ready for responsive design.
 
+(moved to **https://github.com/jazz-soft/JZZ-input-Kbd**)
+
 [![kbd](http://jazz-soft.github.io/img/kbds.png)](https://jazz-soft.github.io/modules/kbd)
 
 ##### Example
@@ -155,6 +159,8 @@ ASCII keyboard as MIDI input.
 [![linux](http://jazz-soft.github.io/img/linux.jpg)](https://jazz-soft.github.io/modules/ascii)
 
 Can be connected to [**JZZ.input.Kbd**](#jzzinputkbd) to enable both keyboard and mouse/touch input.
+
+(moved to **https://github.com/jazz-soft/JZZ-input-Kbd**)
 
 ##### Example
 
@@ -186,6 +192,8 @@ Mouse and multitouch.
 Custom styles.
 Responsive design friendly.
 Perfect to use together with [**JZZ.input.Kbd**](#jzzinputkbd)...
+
+(moved to **https://github.com/jazz-soft/JZZ-input-Kbd**)
 
 [![knobs](http://jazz-soft.github.io/img/knobs.png)](https://jazz-soft.github.io/modules/knobs)
 
