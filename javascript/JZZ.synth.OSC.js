@@ -1,6 +1,19 @@
-(function() {
+(function(global, factory) {
+  if (typeof exports === 'object' && typeof module !== 'undefined') {
+    module.exports = factory;
+  }
+  else if (typeof define === 'function' && define.amd) {
+    define('JZZ.synth.OSC', ['JZZ'], factory);
+  }
+  else {
+    factory(JZZ);
+  }
+})(this, function(JZZ) {
+
   if (!JZZ) return;
   if (!JZZ.synth) JZZ.synth = {};
+
+  var _version = '1.0.1';
 
   var _ac = JZZ.lib.getAudioContext();
 
@@ -9,7 +22,7 @@
     this.channel = function(c) {
       if (!this.channels[c]) this.channels[c] = new Channel();
       return this.channels[c];
-    }
+    };
     this.play = function(arr) {
       var b = arr[0];
       var n = arr[1];
@@ -23,7 +36,7 @@
         if (n == 0x78 || n == 0x7b) this.channel(c).allSoundOff();
         else if (n == 0x40) this.channel(c).damper(!!v);
       }
-    }
+    };
   }
 
   function Channel() {
@@ -32,19 +45,19 @@
     this.note = function(n) {
       if (!this.notes[n]) this.notes[n] = new Note(n, this);
       return this.notes[n];
-    }
+    };
     this.play = function(n, v) {
       this.note(n).play(v);
-    }
+    };
     this.allSoundOff = function() {
       for (var n = 0; n < this.notes.length; n++) if (this.notes[n]) this.notes[n].stop();
-    }
+    };
     this.damper = function(x) {
       if (!x && this.sustain != x) {
         for (var n = 0; n < this.notes.length; n++) if (this.notes[n] && this.notes[n].sustain) this.notes[n].stop();
       }
       this.sustain = x;
-    }
+    };
   }
 
   function Note(n, c) {
@@ -58,7 +71,7 @@
         this.sustain = false;
       }
       catch (e) {}
-    }
+    };
     this.play = function(v) {
       if (v || !this.channel.sustain) this.stop();
       if (!v) {
@@ -82,7 +95,7 @@
       this.gain.connect(_ac.destination);
 
       this.oscillator.start(0);
-    }
+    };
   }
 
   var _synth = {};
@@ -94,24 +107,24 @@
       type: 'Web Audo',
       name: name,
       manufacturer: 'virtual',
-      version: '0.4'
+      version: _version
     };
-  }
+  };
 
   _engine._openOut = function(port, name) {
     if (!_ac) { port._crash('AudioContext not supported'); return;}
-    if (!_synth[name]) _synth[name] = new Synth;
+    if (!_synth[name]) _synth[name] = new Synth();
     port._info = _engine._info(name);
     port._receive = function(msg) { _synth[name].play(msg); };
     port._resume();
-  }
+  };
 
   JZZ.synth.OSC = function(name) {
     return JZZ.lib.openMidiOut(name, _engine);
-  }
+  };
 
   JZZ.synth.OSC.register = function(name) {
     return _ac ? JZZ.lib.registerMidiOut(name, _engine) : false;
-  }
+  };
 
-})();
+});

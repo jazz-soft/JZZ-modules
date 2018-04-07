@@ -9,7 +9,6 @@ button { text-align:left;}
 <script src="../javascript/JZZ.synth.OSC.js"></script>
 <script><!--
 function button1(){
-  JZZ.util.iosSound();
   JZZ.synth.OSC()
     .or(function(){ alert('Cannot open MIDI-Out!\n' + this.err()); })
     .note(0, 'C5', 127, 500).wait(500)
@@ -18,7 +17,6 @@ function button1(){
     .note(0, 'C6', 127, 500);
 }
 function button2(){
-  JZZ.util.iosSound();
   JZZ.synth.OSC.register('Web Audio');
   JZZ().or(function(){ alert('Cannot start MIDI engine!\n' + this.err()); })
     .openMidiOut('Web Audio').or(function(){ alert('Cannot open MIDI-Out!\n' + this.err()); })
