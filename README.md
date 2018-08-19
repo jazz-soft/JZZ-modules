@@ -14,10 +14,10 @@ Additional modules for [**JZZ.js**](https://github.com/jazz-soft/JZZ):
 
 Create a custom MIDI-Out port using [**MIDI.js**](https://github.com/mudcube/MIDI.js) library.
 
-[![windows](http://jazz-soft.github.io/img/windows.jpg)](https://jazz-soft.github.io/modules/midijs)
-[![mocos](http://jazz-soft.github.io/img/macos.jpg)](https://jazz-soft.github.io/modules/midijs)
-[![linux](http://jazz-soft.github.io/img/linux.jpg)](https://jazz-soft.github.io/modules/midijs)
-[![android](http://jazz-soft.github.io/img/android.jpg)](https://jazz-soft.github.io/modules/midijs)
+![windows](https://jazz-soft.github.io/img/windows.jpg)
+![mocos](https://jazz-soft.github.io/img/macos.jpg)
+![linux](https://jazz-soft.github.io/img/linux.jpg)
+![android](https://jazz-soft.github.io/img/android.jpg)
 
 ##### Example
 
@@ -38,10 +38,10 @@ See the [**demo**](https://jazz-soft.github.io/modules/midijs).
 
 A wrapper for the [**Timbre.js**](https://github.com/mohayonao/timbre.js) T("PluckGen")/T("OscGen")/T("SynthDef") synths.
 
-[![windows](http://jazz-soft.github.io/img/windows.jpg)](https://jazz-soft.github.io/modules/timbre)
-[![mocos](http://jazz-soft.github.io/img/macos.jpg)](https://jazz-soft.github.io/modules/timbre)
-[![linux](http://jazz-soft.github.io/img/linux.jpg)](https://jazz-soft.github.io/modules/timbre)
-[![android](http://jazz-soft.github.io/img/android.jpg)](https://jazz-soft.github.io/modules/timbre)
+![windows](https://jazz-soft.github.io/img/windows.jpg)
+![mocos](https://jazz-soft.github.io/img/macos.jpg)
+![linux](https://jazz-soft.github.io/img/linux.jpg)
+![android](https://jazz-soft.github.io/img/android.jpg)
 
 (Unlike advertized, does not seem to work in IE9 and some other browsers)
 
@@ -72,11 +72,11 @@ See the [**demo**](https://jazz-soft.github.io/modules/timbre).
 
 Create a custom MIDI-Out port implemented via Web Audio AudioContext.oscillator.
 
-[![windows](http://jazz-soft.github.io/img/windows.jpg)](https://jazz-soft.github.io/modules/osc)
-[![mocos](http://jazz-soft.github.io/img/macos.jpg)](https://jazz-soft.github.io/modules/osc)
-[![linux](http://jazz-soft.github.io/img/linux.jpg)](https://jazz-soft.github.io/modules/osc)
-[![ios](http://jazz-soft.github.io/img/ios.jpg)](https://jazz-soft.github.io/modules/osc)
-[![android](http://jazz-soft.github.io/img/android.jpg)](https://jazz-soft.github.io/modules/osc)
+![windows](https://jazz-soft.github.io/img/windows.jpg)
+![mocos](https://jazz-soft.github.io/img/macos.jpg)
+![linux](https://jazz-soft.github.io/img/linux.jpg)
+![ios](https://jazz-soft.github.io/img/ios.jpg)
+![android](https://jazz-soft.github.io/img/android.jpg)
 
 (moved to **https://github.com/jazz-soft/JZZ-synth-OSC**)
 
@@ -98,13 +98,13 @@ See the [**demo**](https://jazz-soft.github.io/modules/osc).
 
 A wrapper for the [**Qwerty-Hancock**](https://github.com/stuartmemo/qwerty-hancock) keyboard.
 
-[![windows](http://jazz-soft.github.io/img/windows.jpg)](https://jazz-soft.github.io/modules/qwerty)
-[![mocos](http://jazz-soft.github.io/img/macos.jpg)](https://jazz-soft.github.io/modules/qwerty)
-[![linux](http://jazz-soft.github.io/img/linux.jpg)](https://jazz-soft.github.io/modules/qwerty)
+![windows](https://jazz-soft.github.io/img/windows.jpg)
+![mocos](https://jazz-soft.github.io/img/macos.jpg)
+![linux](https://jazz-soft.github.io/img/linux.jpg)
 
 Works wherewer the mouse and keyboard inputs are available.
 
-[![qwerty](http://jazz-soft.github.io/img/qwerty.png)](https://jazz-soft.github.io/modules/qwerty)
+[![qwerty](https://jazz-soft.github.io/img/qwerty.png)](https://jazz-soft.github.io/modules/qwerty)
 
 ##### Example
 
@@ -125,11 +125,11 @@ See the [**demo**](https://jazz-soft.github.io/modules/qwerty).
 
 Universal HTML keyboard for your MIDI projects.
 
-[![windows](http://jazz-soft.github.io/img/windows.jpg)](https://jazz-soft.github.io/modules/kbd)
-[![mocos](http://jazz-soft.github.io/img/macos.jpg)](https://jazz-soft.github.io/modules/kbd)
-[![linux](http://jazz-soft.github.io/img/linux.jpg)](https://jazz-soft.github.io/modules/kbd)
-[![ios](http://jazz-soft.github.io/img/ios.jpg)](https://jazz-soft.github.io/modules/kbd)
-[![android](http://jazz-soft.github.io/img/android.jpg)](https://jazz-soft.github.io/modules/kbd)
+![windows](https://jazz-soft.github.io/img/windows.jpg)
+![mocos](https://jazz-soft.github.io/img/macos.jpg)
+![linux](https://jazz-soft.github.io/img/linux.jpg)
+![ios](https://jazz-soft.github.io/img/ios.jpg)
+![android](https://jazz-soft.github.io/img/android.jpg)
 
 Mouse and multitouch support.
 Custom styles.
@@ -137,7 +137,7 @@ Ready for responsive design.
 
 (moved to **https://github.com/jazz-soft/JZZ-input-Kbd**)
 
-[![kbd](http://jazz-soft.github.io/img/kbds.png)](https://jazz-soft.github.io/modules/kbd)
+[![kbd](https://jazz-soft.github.io/img/kbds.png)](https://jazz-soft.github.io/modules/kbd)
 
 ##### Example
 
@@ -154,9 +154,9 @@ See the [**demo**](https://jazz-soft.github.io/modules/kbd).
 
 ASCII keyboard as MIDI input.
 
-[![windows](http://jazz-soft.github.io/img/windows.jpg)](https://jazz-soft.github.io/modules/ascii)
-[![mocos](http://jazz-soft.github.io/img/macos.jpg)](https://jazz-soft.github.io/modules/ascii)
-[![linux](http://jazz-soft.github.io/img/linux.jpg)](https://jazz-soft.github.io/modules/ascii)
+![windows](https://jazz-soft.github.io/img/windows.jpg)
+![mocos](https://jazz-soft.github.io/img/macos.jpg)
+![linux](https://jazz-soft.github.io/img/linux.jpg)
 
 Can be connected to [**JZZ.input.Kbd**](#jzzinputkbd) to enable both keyboard and mouse/touch input.
 
@@ -182,11 +182,11 @@ See the [**demo**](https://jazz-soft.github.io/modules/ascii).
 
 Pitch-bend, modulation, and other knobs for your virtual instrument.
 
-[![windows](http://jazz-soft.github.io/img/windows.jpg)](https://jazz-soft.github.io/modules/knobs)
-[![mocos](http://jazz-soft.github.io/img/macos.jpg)](https://jazz-soft.github.io/modules/knobs)
-[![linux](http://jazz-soft.github.io/img/linux.jpg)](https://jazz-soft.github.io/modules/knobs)
-[![ios](http://jazz-soft.github.io/img/ios.jpg)](https://jazz-soft.github.io/modules/knobs)
-[![android](http://jazz-soft.github.io/img/android.jpg)](https://jazz-soft.github.io/modules/knobs)
+![windows](https://jazz-soft.github.io/img/windows.jpg)
+![mocos](https://jazz-soft.github.io/img/macos.jpg)
+![linux](https://jazz-soft.github.io/img/linux.jpg)
+![ios](https://jazz-soft.github.io/img/ios.jpg)
+![android](https://jazz-soft.github.io/img/android.jpg)
 
 Mouse and multitouch.
 Custom styles.
@@ -195,7 +195,7 @@ Perfect to use together with [**JZZ.input.Kbd**](#jzzinputkbd)...
 
 (moved to **https://github.com/jazz-soft/JZZ-input-Kbd**)
 
-[![knobs](http://jazz-soft.github.io/img/knobs.png)](https://jazz-soft.github.io/modules/knobs)
+[![knobs](https://jazz-soft.github.io/img/knobs.png)](https://jazz-soft.github.io/modules/knobs)
 
 ##### Example
 
@@ -212,4 +212,4 @@ See the [**demo**](https://jazz-soft.github.io/modules/knobs).
 
 ### More modules are coming soon...
 
-[**How to create your own modules for JZZ.js**](http://jazz-soft.net/doc/JZZ/modules.html)
+[**How to create your own modules for JZZ.js**](https://jazz-soft.net/doc/JZZ/modules.html)

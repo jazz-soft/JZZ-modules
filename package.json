@@ -2,17 +2,17 @@
   "name": "jzz-modules-dev",
   "version": "0.0.0",
   "description": "JZZ-modules development",
-  "author": "jazz-soft (http://jazz-soft.net/)",
+  "author": "jazz-soft (https://jazz-soft.net/)",
   "repository": {
     "type": "git",
     "url": "https://github.com/jazz-soft/JZZ-modules.git"
   },
-  "homepage": "http://jazz-soft.net",
-  "bugs": "http://jazz-soft.org",
+  "homepage": "https://jazz-soft.net",
+  "bugs": "https://jazz-soft.org",
   "license": "MIT",
   "devDependencies": {
-    "grunt": "^1.0.2",
-    "grunt-contrib-uglify": "^3.3.0"
+    "grunt": "^1.0.3",
+    "grunt-contrib-uglify": "^3.4.0"
   },
   "private": true
 }
