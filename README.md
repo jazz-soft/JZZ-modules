@@ -5,6 +5,7 @@ Additional modules for [**JZZ.js**](https://github.com/jazz-soft/JZZ):
 [**JZZ.synth.MIDIjs**](#jzzsynthmidijs)  
 [**JZZ.synth.Timbre**](#jzzsynthtimbre)  
 [**JZZ.synth.OSC**](#jzzsynthosc) - moved to **https://github.com/jazz-soft/JZZ-synth-OSC**  
+[**JZZ.synth.Tiny**](#jzzsynthtiny) - see at **https://github.com/jazz-soft/JZZ-synth-Tiny**  
 [**JZZ.input.Qwerty**](#jzzinputqwerty)  
 [**JZZ.input.Kbd**](#jzzinputkbd) - moved to **https://github.com/jazz-soft/JZZ-input-Kbd**  
 [**JZZ.input.ASCII**](#jzzinputascii) - moved to **https://github.com/jazz-soft/JZZ-input-Kbd**  
@@ -70,7 +71,7 @@ See the [**demo**](https://jazz-soft.github.io/modules/timbre).
 
 ## JZZ.synth.OSC
 
-Create a custom MIDI-Out port implemented via Web Audio AudioContext.oscillator.
+A simple Web Audio oscillator-based MIDI-Out port.
 
 ![windows](https://jazz-soft.github.io/img/windows.jpg)
 ![mocos](https://jazz-soft.github.io/img/macos.jpg)
@@ -93,6 +94,34 @@ Create a custom MIDI-Out port implemented via Web Audio AudioContext.oscillator.
     --></script>
 
 See the [**demo**](https://jazz-soft.github.io/modules/osc).
+
+## JZZ.synth.Tiny
+
+Tiny Web-Audio GM Synthesizer 
+([g200kg/webaudio-tinysynth](https://github.com/g200kg/webaudio-tinysynth))
+wrapped as MIDI-Out port.
+
+![windows](https://jazz-soft.github.io/img/windows.jpg)
+![mocos](https://jazz-soft.github.io/img/macos.jpg)
+![linux](https://jazz-soft.github.io/img/linux.jpg)
+![ios](https://jazz-soft.github.io/img/ios.jpg)
+![android](https://jazz-soft.github.io/img/android.jpg)
+
+(see at **https://github.com/jazz-soft/JZZ-synth-Tiny**)
+
+##### Example
+
+    <script src='javascript/JZZ.js'></script>
+    <script src='javascript/JZZ.synth.Tiny.js'></script>
+    <script><!--
+    JZZ.synth.Tiny()
+       .note(0, 'C5', 127, 500).wait(500)
+       .note(0, 'E5', 127, 500).wait(500)
+       .note(0, 'G5', 127, 500).wait(500)
+       .note(0, 'C6', 127, 500);
+    --></script>
+
+See the [**demo**](https://jazz-soft.github.io/modules/tiny).
 
 ## JZZ.input.Qwerty
 

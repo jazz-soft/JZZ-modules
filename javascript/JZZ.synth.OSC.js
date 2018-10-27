@@ -12,24 +12,33 @@
 
   if (!JZZ) return;
   if (!JZZ.synth) JZZ.synth = {};
+  if (JZZ.synth.OSC) return;
 
-  var _version = '1.0.1';
+  var _version = '1.0.8';
 
   var _ac = JZZ.lib.getAudioContext();
 
   function Synth() {
+    this.ac = _ac;
+    this.dest = this.ac.destination;
     this.channels = [];
     this.channel = function(c) {
-      if (!this.channels[c]) this.channels[c] = new Channel();
+      if (!this.channels[c]) {
+        this.channels[c] = new Channel(this);
+        if (c == 9) this.channels[c].note = function(n) {
+          if (!this.notes[n]) this.notes[n] = new Perc(n, this);
+          return this.notes[n];
+        };
+      }
       return this.channels[c];
     };
     this.play = function(arr) {
       var b = arr[0];
       var n = arr[1];
       var v = arr[2];
-      if (b<0 || b>255) return;
-      var c = b&15;
-      var s = b>>4;
+      if (b < 0 || b > 255) return;
+      var c = b & 15;
+      var s = b >> 4;
       if (s == 9) this.channel(c).play(n, v);
       else if (s == 8) this.channel(c).play(n, 0);
       else if (s == 0xb) {
@@ -37,9 +46,26 @@
         else if (n == 0x40) this.channel(c).damper(!!v);
       }
     };
+    this.plug = function(dest) {
+      try {
+        this.ac = undefined;
+        if (dest.context instanceof AudioContext || dest.context instanceof webkitAudioContext) {
+          this.ac = dest.context;
+          this.dest = dest;
+        }
+      }
+      catch (e) {
+        this.ac = undefined;
+      }
+      if (!this.ac) {
+        this.ac = _ac;
+        this.dest = this.ac.destination;
+      }
+    };
   }
 
-  function Channel() {
+  function Channel(synth) {
+    this.synth = synth;
     this.notes = [];
     this.sustain = false;
     this.note = function(n) {
@@ -79,26 +105,55 @@
         return;
       }
       var ampl = v/127;
-      this.oscillator = _ac.createOscillator();
+      this.oscillator = this.channel.synth.ac.createOscillator();
       this.oscillator.type = 'sawtooth';
-      this.oscillator.frequency.setTargetAtTime(this.freq, _ac.currentTime, 0.01);
+      this.oscillator.frequency.setTargetAtTime(this.freq, this.channel.synth.ac.currentTime, 0.005);
       if (!this.oscillator.start) this.oscillator.start = this.oscillator.noteOn;
       if (!this.oscillator.stop) this.oscillator.stop = this.oscillator.noteOff;
 
-      this.gain = _ac.createGain();
+      this.gain = this.channel.synth.ac.createGain();
       var releaseTime = 2;
-      var now = _ac.currentTime;
+      var now = this.channel.synth.ac.currentTime;
       this.gain.gain.setValueAtTime(ampl, now);
       this.gain.gain.exponentialRampToValueAtTime(0.01*ampl, now + releaseTime);
 
       this.oscillator.connect(this.gain);
-      this.gain.connect(_ac.destination);
+      this.gain.connect(this.channel.synth.dest);
 
       this.oscillator.start(0);
     };
   }
 
+  function Perc(n, c) {
+    this.note = n;
+    this.channel = c;
+    this.freq = 200;
+    this.stop = function() {};
+    this.play = function(v) {
+      if (!v) return;
+
+      var ampl = v/127;
+      this.oscillator = this.channel.synth.ac.createOscillator();
+      this.oscillator.type = 'sine';
+      this.oscillator.frequency.setTargetAtTime(this.freq, this.channel.synth.ac.currentTime, 0.005);
+      if (!this.oscillator.start) this.oscillator.start = this.oscillator.noteOn;
+      if (!this.oscillator.stop) this.oscillator.stop = this.oscillator.noteOff;
+
+      this.gain = this.channel.synth.ac.createGain();
+      var releaseTime = 2;
+      var now = this.channel.synth.ac.currentTime;
+      this.gain.gain.setValueAtTime(ampl, now);
+
+      this.oscillator.connect(this.gain);
+      this.gain.connect(this.channel.synth.dest);
+
+      this.oscillator.start(0);
+      this.oscillator.stop(this.channel.synth.ac.currentTime + 0.04);
+    };
+  }
+
   var _synth = {};
+  var _noname = [];
   var _engine = {};
 
   _engine._info = function(name) {
@@ -112,10 +167,20 @@
   };
 
   _engine._openOut = function(port, name) {
-    if (!_ac) { port._crash('AudioContext not supported'); return;}
-    if (!_synth[name]) _synth[name] = new Synth();
+    if (!_ac) { port._crash('AudioContext not supported'); return; }
+    var synth;
+    if (typeof name !== 'undefined') {
+      name = '' + name;
+      if (!_synth[name]) _synth[name] = new Synth();
+      synth = _synth[name];
+    }
+    else {
+      synth = new Synth();
+      _noname.push(synth);
+    }
+    port.plug = function(dest) { synth.plug(dest); };
     port._info = _engine._info(name);
-    port._receive = function(msg) { _synth[name].play(msg); };
+    port._receive = function(msg) { synth.play(msg); };
     port._resume();
   };
 
@@ -126,5 +191,7 @@
   JZZ.synth.OSC.register = function(name) {
     return _ac ? JZZ.lib.registerMidiOut(name, _engine) : false;
   };
+
+  JZZ.synth.OSC.version = function() { return _version; };
 
 });
