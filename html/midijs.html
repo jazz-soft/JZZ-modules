@@ -34,7 +34,7 @@ function hideLoading(){
 }
 function button1(){
   showLoading();
-  JZZ.synth.MIDIjs('MIDI.js', { soundfontUrl: "./soundfont/", instrument: "acoustic_grand_piano" })
+  JZZ.synth.MIDIjs({ soundfontUrl: "./soundfont/", instrument: "acoustic_grand_piano" })
     .or(function(){ hideLoading(); alert('Cannot load MIDI.js!\n' + this.err()); })
     .and(function(){ hideLoading(); })
     .note(0, 'C5', 127, 500).wait(500)
@@ -61,7 +61,7 @@ function button2(){
 <body>
 <h1>JZZ.synth.MIDIjs</h1>
 <button onclick='button1();'><pre>
-JZZ.synth.MIDIjs('MIDI.js', {...})
+JZZ.synth.MIDIjs({...})
 
   .note(0, 'C5', 127, 500).wait(500)
   .note(0, 'E5', 127, 500).wait(500)

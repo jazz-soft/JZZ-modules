@@ -2084,13 +2084,13 @@
   JZZ.lib.schedule = _schedule;
   JZZ.lib.openMidiOut = function(name, engine) {
     var port = new _M();
-    engine._openOut(port, name);
+    engine._openOut(port);
     port._info = engine._info(name);
     return port;
   };
   JZZ.lib.openMidiIn = function(name, engine) {
     var port = new _M();
-    engine._openIn(port, name);
+    engine._openIn(port);
     port._info = engine._info(name);
     return port;
   };

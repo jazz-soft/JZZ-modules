@@ -28,7 +28,7 @@ function play1() {
     .note(0, 'C6', 127, 500);
 }
 function play2() {
-  JZZ.synth.Timbre('Timbre', synth)
+  JZZ.synth.Timbre(synth)
     .or(function(){ alert('Cannot open MIDI-Out! ' + this.err()); })
     .note(0, 'C5', 127, 500).wait(500)
     .note(0, 'E5', 127, 500).wait(500)
@@ -53,7 +53,7 @@ JZZ().openMidiOut('Timbre')
 </pre></button>
 
 <button onclick='play2();'><pre>
-JZZ.synth.Timbre('Timbre', synth)
+JZZ.synth.Timbre(synth)
 
   .note(0, 'C5', 127, 500).wait(500)
   .note(0, 'E5', 127, 500).wait(500)
