@@ -6,13 +6,14 @@
     define('JZZ', [], factory);
   }
   else {
+    if (!global) global = window;
     if (global.JZZ && global.JZZ.MIDI) return;
     global.JZZ = factory();
   }
 })(this, function() {
 
   var _scope = typeof window === 'undefined' ? global : window;
-  var _version = '0.5.9';
+  var _version = '0.6.6';
   var i, j, k, m, n;
 
   var _time = Date.now || function () { return new Date().getTime(); };
@@ -662,9 +663,9 @@
     _engine._version = _engine._main.version;
     _engine._sysex = true;
     var watcher;
-    _closeAll = function() {
+    function _closeAll() {
       for (var i = 0; i < this.clients.length; i++) this._close(this.clients[i]);
-    };
+    }
     _engine._refresh = function() {
       _engine._outs = [];
       _engine._ins = [];
@@ -707,7 +708,7 @@
           },
           _close: function(port) { _engine._closeOut(port); },
           _closeAll: _closeAll,
-          _receive: function(a) { this.plugin.MidiOutRaw(a.slice()); }
+          _receive: function(a) { if (a.length) this.plugin.MidiOutRaw(a.slice()); }
         };
         var plugin = _engine._pool[_engine._outArr.length];
         impl.plugin = plugin;
@@ -848,9 +849,9 @@
     _engine._outsW = [];
     _engine._insW = [];
     var watcher;
-    _closeAll = function() {
+    function _closeAll() {
       for (var i = 0; i < this.clients.length; i++) this._close(this.clients[i]);
-    };
+    }
     _engine._refresh = function() {
       _engine._outs = [];
       _engine._ins = [];
@@ -891,7 +892,7 @@
           },
           _close: function(port) { _engine._closeOut(port); },
           _closeAll: _closeAll,
-          _receive: function(a) { if (impl.dev) this.dev.send(a.slice()); }
+          _receive: function(a) { if (impl.dev && a.length) this.dev.send(a.slice()); }
         };
       }
       var found;
@@ -1013,9 +1014,9 @@
         document.dispatchEvent(new CustomEvent('jazz-midi', { detail: ['refresh'] }));
       }, 0);
     };
-    _closeAll = function() {
+    function _closeAll() {
       for (var i = 0; i < this.clients.length; i++) this._close(this.clients[i]);
-    };
+    }
     _engine._openOut = function(port, name) {
       var impl = _engine._outMap[name];
       if (!impl) {
@@ -1035,7 +1036,7 @@
           _start: function() { document.dispatchEvent(new CustomEvent('jazz-midi', { detail: ['openout', plugin.id, name] })); },
           _close: function(port) { _engine._closeOut(port); },
           _closeAll: _closeAll,
-          _receive: function(a) { var v = a.slice(); v.splice(0, 0, 'play', plugin.id); document.dispatchEvent(new CustomEvent('jazz-midi', {detail: v})); }
+          _receive: function(a) { if (a.length) { var v = a.slice(); v.splice(0, 0, 'play', plugin.id); document.dispatchEvent(new CustomEvent('jazz-midi', {detail: v})); } }
         };
         impl.plugin = plugin;
         plugin.output = impl;
@@ -1533,15 +1534,6 @@
       else if (arr.length > 2) dd = _2s(Array.prototype.slice.call(arr, 1));
       var f = {
         0: _helperSMF.smfSeqNumber,
-        1: _helperSMF.smfText,
-        2: _helperSMF.smfCopyright,
-        3: _helperSMF.smfSeqName,
-        4: _helperSMF.smfInstrName,
-        5: _helperSMF.smfLyric,
-        6: _helperSMF.smfMarker,
-        7: _helperSMF.smfCuePoint,
-        8: _helperSMF.smfProgName,
-        9: _helperSMF.smfDevName,
         32: _helperSMF.smfChannelPrefix,
         47: _helperSMF.smfEndOfTrack,
         81: _helperSMF.smfTempo,
@@ -1601,8 +1593,7 @@
     smfSMPTE: function(dd) {
       if (dd instanceof SMPTE) return _smf(84, String.fromCharCode(dd.hour) + String.fromCharCode(dd.minute) + String.fromCharCode(dd.second) + String.fromCharCode(dd.frame) + String.fromCharCode((dd.quarter % 4) * 25));
       var s = '' + dd;
-      if (s.length == 5 && s.charCodeAt(4) < 100) {
-        new SMPTE(30, s.charCodeAt(0), s.charCodeAt(1), s.charCodeAt(2), s.charCodeAt(3), s.charCodeAt(4) / 25);
+      if (s.length == 5) {
         return _smf(84, dd);
       }
       var arr = dd instanceof Array ? dd : Array.prototype.slice.call(arguments);
@@ -2093,13 +2084,13 @@
   JZZ.lib.schedule = _schedule;
   JZZ.lib.openMidiOut = function(name, engine) {
     var port = new _M();
-    engine._openOut(port);
+    engine._openOut(port, name);
     port._info = engine._info(name);
     return port;
   };
   JZZ.lib.openMidiIn = function(name, engine) {
     var port = new _M();
-    engine._openIn(port);
+    engine._openIn(port, name);
     port._info = engine._info(name);
     return port;
   };
