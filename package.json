@@ -11,8 +11,8 @@
   "bugs": "https://jazz-soft.org",
   "license": "MIT",
   "devDependencies": {
-    "grunt": "^1.0.3",
-    "grunt-contrib-uglify": "^4.0.0"
+    "grunt": "^1.0.4",
+    "grunt-contrib-uglify": "^4.0.1"
   },
   "private": true
 }
