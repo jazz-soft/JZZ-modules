@@ -22,16 +22,18 @@ Create a custom MIDI-Out port using [**MIDI.js**](https://github.com/mudcube/MID
 
 ##### Example
 
-    <script src='javascript/JZZ.js'></script>
-    <script src='javascript/MIDI.js'></script>
-    <script src='javascript/JZZ.synth.MIDIjs.js'></script>
-    <script><!--
-    JZZ.synth.MIDIjs({ soundfontUrl: "./soundfont/", instrument: "acoustic_grand_piano" })
-       .note(0, 'C5', 127, 500).wait(500)
-       .note(0, 'E5', 127, 500).wait(500)
-       .note(0, 'G5', 127, 500).wait(500)
-       .note(0, 'C6', 127, 500);
-    --></script>
+```html
+<script src='javascript/JZZ.js'></script>
+<script src='javascript/MIDI.js'></script>
+<script src='javascript/JZZ.synth.MIDIjs.js'></script>
+<script><!--
+JZZ.synth.MIDIjs({ soundfontUrl: "./soundfont/", instrument: "acoustic_grand_piano" })
+   .note(0, 'C5', 127, 500).wait(500)
+   .note(0, 'E5', 127, 500).wait(500)
+   .note(0, 'G5', 127, 500).wait(500)
+   .note(0, 'C6', 127, 500);
+--></script>
+```
 
 See the [**demo**](https://jazz-soft.github.io/modules/midijs).
 
@@ -48,24 +50,26 @@ A wrapper for the [**Timbre.js**](https://github.com/mohayonao/timbre.js) T("Plu
 
 ##### Example
 
-    <script src='javascript/timbre.js'></script>
-    <script src='javascript/JZZ.js'></script>
-    <script src='javascript/JZZ.synth.MIDIjs.js'></script>
-    <script><!--
-    var synth = T("SynthDef").play();
-    synth.def = function(opts) {
-      var osc1, osc2, env;
-      osc1 = T("sin", {freq:opts.freq, mul:0.25});
-      osc2 = T("sin", {freq:opts.freq + 8, mul:0.25});
-      env  = T("linen", {s:450, r:2500, lv:0.5}, osc1, osc2);
-      return env.on("ended", opts.doneAction).bang();
-    };
-    JZZ.synth.Timbre(synth)
-       .note(0, 'C5', 127, 500).wait(500)
-       .note(0, 'E5', 127, 500).wait(500)
-       .note(0, 'G5', 127, 500).wait(500)
-       .note(0, 'C6', 127, 500);
-    --></script>
+```html
+<script src='javascript/timbre.js'></script>
+<script src='javascript/JZZ.js'></script>
+<script src='javascript/JZZ.synth.MIDIjs.js'></script>
+<script><!--
+var synth = T("SynthDef").play();
+synth.def = function(opts) {
+  var osc1, osc2, env;
+  osc1 = T("sin", {freq:opts.freq, mul:0.25});
+  osc2 = T("sin", {freq:opts.freq + 8, mul:0.25});
+  env  = T("linen", {s:450, r:2500, lv:0.5}, osc1, osc2);
+  return env.on("ended", opts.doneAction).bang();
+};
+JZZ.synth.Timbre(synth)
+   .note(0, 'C5', 127, 500).wait(500)
+   .note(0, 'E5', 127, 500).wait(500)
+   .note(0, 'G5', 127, 500).wait(500)
+   .note(0, 'C6', 127, 500);
+--></script>
+```
 
 See the [**demo**](https://jazz-soft.github.io/modules/timbre).
 
@@ -83,15 +87,17 @@ A simple Web Audio oscillator-based MIDI-Out port.
 
 ##### Example
 
-    <script src='javascript/JZZ.js'></script>
-    <script src='javascript/JZZ.synth.OSC.js'></script>
-    <script><!--
-    JZZ.synth.OSC()
-       .note(0, 'C5', 127, 500).wait(500)
-       .note(0, 'E5', 127, 500).wait(500)
-       .note(0, 'G5', 127, 500).wait(500)
-       .note(0, 'C6', 127, 500);
-    --></script>
+```html
+<script src='javascript/JZZ.js'></script>
+<script src='javascript/JZZ.synth.OSC.js'></script>
+<script><!--
+JZZ.synth.OSC()
+   .note(0, 'C5', 127, 500).wait(500)
+   .note(0, 'E5', 127, 500).wait(500)
+   .note(0, 'G5', 127, 500).wait(500)
+   .note(0, 'C6', 127, 500);
+--></script>
+```
 
 See the [**demo**](https://jazz-soft.github.io/modules/osc).
 
@@ -111,15 +117,17 @@ wrapped as MIDI-Out port.
 
 ##### Example
 
-    <script src='javascript/JZZ.js'></script>
-    <script src='javascript/JZZ.synth.Tiny.js'></script>
-    <script><!--
-    JZZ.synth.Tiny()
-       .note(0, 'C5', 127, 500).wait(500)
-       .note(0, 'E5', 127, 500).wait(500)
-       .note(0, 'G5', 127, 500).wait(500)
-       .note(0, 'C6', 127, 500);
-    --></script>
+```html
+<script src='javascript/JZZ.js'></script>
+<script src='javascript/JZZ.synth.Tiny.js'></script>
+<script><!--
+JZZ.synth.Tiny()
+   .note(0, 'C5', 127, 500).wait(500)
+   .note(0, 'E5', 127, 500).wait(500)
+   .note(0, 'G5', 127, 500).wait(500)
+   .note(0, 'C6', 127, 500);
+--></script>
+```
 
 See the [**demo**](https://jazz-soft.github.io/modules/tiny).
 
@@ -137,16 +145,18 @@ Works wherewer the mouse and keyboard inputs are available.
 
 ##### Example
 
-    <script src='javascript/JZZ.js'></script>
-    <script src='javascript/qwerty-hancock.js'></script>
-    <script src='javascript/JZZ.input.Qwerty'></script>
-    ...
-    <div id='qwerty'> here comes the piano! </div>
-    ...
-    <script><!--
-    JZZ.input.Qwerty({id:'qwerty', width:281, height:150, octaves:1, startNote:'C4'})
-       .connect(JZZ().openMidiOut());
-    --></script>
+```html
+<script src='javascript/JZZ.js'></script>
+<script src='javascript/qwerty-hancock.js'></script>
+<script src='javascript/JZZ.input.Qwerty'></script>
+...
+<div id='qwerty'> here comes the piano! </div>
+...
+<script><!--
+JZZ.input.Qwerty({id:'qwerty', width:281, height:150, octaves:1, startNote:'C4'})
+   .connect(JZZ().openMidiOut());
+--></script>
+```
 
 See the [**demo**](https://jazz-soft.github.io/modules/qwerty).
 
@@ -170,12 +180,14 @@ Ready for responsive design.
 
 ##### Example
 
-    <script src='javascript/JZZ.js'></script>
-    <script src='javascript/JZZ.input.Kbd'></script>
-    ...
-    <script><!--
-    JZZ.input.Kbd().connect(JZZ().openMidiOut());
-    --></script>
+```html
+<script src='javascript/JZZ.js'></script>
+<script src='javascript/JZZ.input.Kbd'></script>
+...
+<script><!--
+JZZ.input.Kbd().connect(JZZ().openMidiOut());
+--></script>
+```
 
 See the [**demo**](https://jazz-soft.github.io/modules/kbd).
 
@@ -193,17 +205,19 @@ Can be connected to [**JZZ.input.Kbd**](#jzzinputkbd) to enable both keyboard an
 
 ##### Example
 
-    <script src='javascript/JZZ.js'></script>
-    <script src='javascript/JZZ.input.ASCII'></script>
-    ...
-    <script><!--
-    JZZ.input.ASCII({
-         //  S D   G H J
-         // Z X C V B N M
-         Z:'C5', S:'C#5', X:'D5', D:'D#5', C:'E5', V:'F5',
-         G:'F#5', B:'G5', H:'Ab5', N:'A5', J:'Bb5', M:'B5'
-       }).connect(JZZ().openMidiOut());
-    --></script>
+```html
+<script src='javascript/JZZ.js'></script>
+<script src='javascript/JZZ.input.ASCII'></script>
+...
+<script><!--
+JZZ.input.ASCII({
+     //  S D   G H J
+     // Z X C V B N M
+     Z:'C5', S:'C#5', X:'D5', D:'D#5', C:'E5', V:'F5',
+     G:'F#5', B:'G5', H:'Ab5', N:'A5', J:'Bb5', M:'B5'
+   }).connect(JZZ().openMidiOut());
+--></script>
+```
 
 See the [**demo**](https://jazz-soft.github.io/modules/ascii).
 
@@ -228,17 +242,16 @@ Perfect to use together with [**JZZ.input.Kbd**](#jzzinputkbd)...
 
 ##### Example
 
-    <script src='javascript/JZZ.js'></script>
-    <script src='javascript/JZZ.input.Knobs'></script>
-    ...
-    <script><!--
-    JZZ.input.Slider({data:'pitch'}).connect(JZZ().openMidiOut());
-    JZZ.input.Pad({dataX:'mod', dataY:'volume'}).connect(JZZ().openMidiOut());
-    --></script>
+```html
+<script src='javascript/JZZ.js'></script>
+<script src='javascript/JZZ.input.Knobs'></script>
+...
+<script><!--
+JZZ.input.Slider({data:'pitch'}).connect(JZZ().openMidiOut());
+JZZ.input.Pad({dataX:'mod', dataY:'volume'}).connect(JZZ().openMidiOut());
+--></script>
+```
 
 See the [**demo**](https://jazz-soft.github.io/modules/knobs).
-
-
-### More modules are coming soon...
 
 [**How to create your own modules for JZZ.js**](https://jazz-soft.net/doc/JZZ/modules.html)
