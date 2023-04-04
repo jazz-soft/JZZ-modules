@@ -5,8 +5,8 @@
 <style type="text/css">
 button { text-align:left;}
 </style>
-<script src="../javascript/JZZ.js"></script>
-<script src="../javascript/JZZ.synth.OSC.js"></script>
+<script src="../node_modules/jzz/javascript/JZZ.js"></script>
+<script src="../node_modules/jzz-synth-tiny/javascript/JZZ.synth.Tiny.js"></script>
 <script src="../javascript/JZZ.input.Qwerty.js"></script>
 <script src="../javascript/qwerty-hancock.js"></script>
 </head>
@@ -19,7 +19,7 @@ button { text-align:left;}
 <p id=qwerty2>qwerty2</p>
 
 <script><!--
-JZZ.synth.OSC.register('Web Audio');
+JZZ.synth.Tiny.register('Web Audio');
 var output = JZZ().openMidiOut(/^((?!Midi Through).)*$/i);
 JZZ.input.Qwerty('qh1', { id: 'qwerty1', width: 281, height: 150, octaves: 1, startNote: 'C4' })
      .or(function(){ alert('Cannot open MIDI In!\n' + this.err()); })

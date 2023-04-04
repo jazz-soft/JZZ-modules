@@ -207,7 +207,7 @@ Can be connected to [**JZZ.input.Kbd**](#jzzinputkbd) to enable both keyboard an
 
 ```html
 <script src='javascript/JZZ.js'></script>
-<script src='javascript/JZZ.input.ASCII'></script>
+<script src='javascript/JZZ.input.Kbd'></script>
 ...
 <script><!--
 JZZ.input.ASCII({
@@ -244,7 +244,7 @@ Perfect to use together with [**JZZ.input.Kbd**](#jzzinputkbd)...
 
 ```html
 <script src='javascript/JZZ.js'></script>
-<script src='javascript/JZZ.input.Knobs'></script>
+<script src='javascript/JZZ.input.Kbd'></script>
 ...
 <script><!--
 JZZ.input.Slider({data:'pitch'}).connect(JZZ().openMidiOut());
