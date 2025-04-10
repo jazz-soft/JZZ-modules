@@ -13,8 +13,8 @@
   "devDependencies": {
     "grunt": "^1.6.1",
     "grunt-contrib-uglify": "^5.2.2",
-    "jzz": "^1.8.2",
-    "jzz-synth-tiny": "^1.4.0"
+    "jzz": "^1.9.3",
+    "jzz-synth-tiny": "^1.4.3"
   },
   "private": true
 }
